@@ -1,0 +1,232 @@
+@import "tailwindcss";
+
+/*
+ * ============================================================
+ *  DESIGN TOKENS — satu-satunya tempat untuk warna, font, animasi
+ *  Edit di sini, semua halaman ikut berubah.
+ * ============================================================
+ */
+@theme {
+  /* ============================================================
+     PALET "SLATE-BIRU" — satu keluarga hue ±217° (senada accent
+     #3b82f6), dengan skala elevation 4 tingkat yang jelas:
+     L0 background → L1 surface (card) → L2 surface-2 (track/well)
+     → L3 surface-3 (input/interaktif). Saturasi menurun makin
+     terang (33% → 20%) supaya birunya halus, tidak norak.
+     ============================================================ */
+  --color-background: #0b0f16; /* L0 — hsl(218 33% 6%) biru-hitam pekat */
+  --color-surface: #141b28;    /* L1 — hsl(218 33% 12%) card & kotak section */
+  --color-surface-2: #1d2634;  /* L2 — hsl(217 28% 16%) track, well dalam card */
+  --color-surface-3: #2a3547;  /* L3 — hsl(216 20% 22%) input & elemen interaktif */
+  /* Track kosong progress bar skill = L2 (jelas di atas card L1). */
+  --color-track: #1d2634;
+  /* Teks ikut didinginkan halus supaya senada dengan keluarga warna. */
+  --color-foreground: #f2f5fa;
+  --color-muted: #9ba7bb;
+
+  /* Warna aksen + variannya (satu keluarga biru) */
+  --color-accent: #3b82f6;
+  --color-accent-soft: rgb(59 130 246 / 0.18);
+  /* Hover = lebih TERANG (pola standar dark UI), bukan lebih gelap. */
+  --color-accent-hover: #60a5fa;
+  /* Latar sangat redup untuk elemen aktif/hover halus. */
+  --color-accent-subtle: rgb(59 130 246 / 0.1);
+
+  /* Hairline border — kebiruan (rgb 148 184 255 = biru terang) supaya
+     garis pembatas ikut senada dengan keluarga warna, bukan abu netral
+     yang berdiri sendiri. */
+  --color-hairline: rgb(148 184 255 / 0.17);
+  /* Hairline lebih terang — khusus kotak section (SectionBox). */
+  --color-hairline-strong: rgb(148 184 255 / 0.28);
+  /* Isi (fill) kotak section — di atas body hasilnya ≈ #161c28 (= L1):
+     kotak section terbaca sebagai panel yang mengapung. */
+  --color-hairline-fill: rgb(148 184 255 / 0.08);
+
+  /* Font: Inter (heading/body) + JetBrains Mono (label/tag) */
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Animasi halus */
+  --animate-fade-up: fade-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* Elemen dekoratif sengaja membentang penuh (bleed) sampai
+       melewati tepi layar — di-clip di sini supaya tidak memunculkan
+       scrollbar horizontal. */
+    overflow-x: clip;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: "cv11", "ss01";
+    /* Teks panjang (termasuk kata tanpa spasi seperti URL) tetap
+       wrap ke baris baru, tidak melebar keluar container. */
+    overflow-wrap: anywhere;
+    overflow-x: clip;
+    /* Lapisan dekoratif global (PixelSnow) dipasang fixed supaya
+       menutupi penuh dari atas sampai ke bawah tanpa terpotong
+       oleh batas body/section. */
+    background-color: #0b0f16;
+    color-scheme: dark;
+  }
+
+  ::selection {
+    background: rgb(59 130 246 / 0.35);
+    color: #ffffff;
+  }
+}
+
+/*
+ * ============================================================
+ *  ELEMEN DEKORATIF (TAHAP 3) — scroll reveal
+ *  Elemen .reveal muncul satu per satu (staggered, delay antar
+ *  elemen ~100ms via inline animation-delay) saat pertama masuk
+ *  viewport. Dipicu oleh RevealObserver yang menambahkan
+ *  .is-visible.
+ * ============================================================
+ */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+}
+
+.reveal.is-visible {
+  animation: reveal-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: var(--reveal-delay, 0ms);
+}
+
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Pengguna dengan preferensi animasi berkurang: konten langsung tampil. */
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+
+  /* Background WebGL (React Bits) ikut disembunyikan — murni dekoratif,
+     tidak wajib dilihat. */
+  .fx-bg {
+    display: none;
+  }
+
+  .pixel-snow-container {
+    display: none;
+  }
+}
+
+/*
+ * ============================================================
+ *  SCROLL REVEAL (TAHAP 3) — elemen .reveal muncul satu per satu
+ *  (staggered, delay antar elemen ~100ms via inline
+ *  animation-delay) saat pertama masuk viewport. Dipicu oleh
+ *  RevealObserver yang menambahkan .is-visible.
+ * ============================================================
+ *  NOTE: kode grid & glow di bawah ini sengaja ditahan sementara
+ *  untuk referensi / rollback. Saat ini TIDAK DIPAKAI di layout.
+ * ============================================================
+ */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+}
+
+.reveal.is-visible {
+  animation: reveal-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: var(--reveal-delay, 0ms);
+}
+
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Pengguna dengan preferensi animasi berkurang: konten langsung tampil. */
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+
+  /* Background WebGL (React Bits) ikut disembunyikan — murni dekoratif,
+     tidak wajib dilihat. */
+  .fx-bg {
+    display: none;
+  }
+
+  .pixel-snow-container {
+    display: none;
+  }
+}
+
+/*
+ * Grid & glow biru — TIDAK DIPAKAI lagi.
+ * Grid putih dan cahaya biru sudah tidak dipakai. Ditahan di sini
+ * hanya untuk referensi / rollback.
+ * ============================================================
+ */
+.bg-grid {
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.07) 1px, transparent 1px);
+  background-size: 56px 56px;
+  display: none;
+}
+
+.bg-grid-fade {
+  -webkit-mask-image: linear-gradient(to bottom, black 30%, transparent 90%);
+  mask-image: linear-gradient(to bottom, black 30%, transparent 90%);
+  display: none;
+}
+
+.bg-glow-accent {
+  background: radial-gradient(
+    closest-side,
+    rgb(59 130 246 / 0.26),
+    transparent 72%
+  );
+  display: none;
+}
+
+/*
+ * Kontrol kecil: pastikan tidak ada glow/blue wash yang
+ * kebetulan muncul dari elemen .bg-glow-accent di layout.
+ * (Ini hanya fallback; sebenarnya elemennya sudah dihapus.)
+ */
+.isolate .bg-glow-accent,
+section .bg-glow-accent,
+main .bg-glow-accent {
+  display: none !important;
+}

@@ -1,0 +1,50 @@
+/*
+ * PhotoFrame — bingkai foto gaya Canva.
+ * Radius & fokus dikontrol via CSS variables yang di-set inline
+ * oleh PhotoFrame.tsx (--photo-radius, --photo-focus-x/y).
+ */
+
+.photo-frame {
+  position: relative;
+}
+
+/* Semua gambar di dalam frame mengikuti bentuk bingkai & titik
+   fokus (crop). Specificity .photo-frame img menang atas rule
+   .tilted-card-img (15px), jadi TiltedCard ikut bentuk bingkai. */
+.photo-frame img {
+  border-radius: var(--photo-radius, 1rem);
+  object-fit: cover;
+  object-position: var(--photo-focus-x, 50%) var(--photo-focus-y, 50%);
+}
+
+/* Mode Edit: kursor grab + hint kecil di pojok. */
+.photo-frame-editable {
+  cursor: grab;
+  touch-action: none;
+}
+
+.photo-frame-editable:active {
+  cursor: grabbing;
+}
+
+.photo-frame-hint {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  z-index: 20;
+  pointer-events: none;
+  border-radius: 4px;
+  border: 1px solid rgb(255 255 255 / 0.2);
+  background: rgb(0 0 0 / 0.6);
+  padding: 2px 7px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: rgb(255 255 255 / 0.85);
+  backdrop-filter: blur(4px);
+}
+
+/* Hindari teks terseleksi saat drag fokus di mobile. */
+.photo-frame-editable img {
+  user-select: none;
+  -webkit-user-drag: none;
+}

@@ -1,0 +1,41 @@
+/*
+ * Tipografi dinamis (Mode Edit admin).
+ * Setiap elemen kunci punya variabel skala (persen, 100 = default).
+ * Nilai --*-scale di-set inline dari data profile Supabase; kalau
+ * tidak di-set, fallback ke 100 → tampilan persis seperti tema.
+ * clamp() menjaga batas wajar (70%–160%) walau data rusak.
+ * Responsivitas tetap jalan: skala mengalikan ukuran fluid, bukan
+ * menimpanya dengan px tetap.
+ */
+
+.hero-name-text {
+  font-size: clamp(
+    1.5rem,
+    calc(3rem + (var(--name-scale, 100) - 100) * 0.035rem),
+    calc(var(--name-scale, 100) / 100 * 6.5rem)
+  );
+}
+
+.hero-tagline-text {
+  font-size: calc(var(--tagline-scale, 100) / 100 * 1.25rem);
+}
+
+.section-title-text {
+  font-size: clamp(
+    1.5rem,
+    calc(2.25rem + (var(--section-title-scale, 100) - 100) * 0.02rem),
+    calc(var(--section-title-scale, 100) / 100 * 3rem)
+  );
+}
+
+.body-text {
+  font-size: calc(var(--body-scale, 100) / 100 * 1rem);
+}
+
+.project-card-title {
+  font-size: calc(var(--card-title-scale, 100) / 100 * 1.25rem);
+}
+
+.project-card-text {
+  font-size: calc(var(--card-text-scale, 100) / 100 * 0.875rem);
+}

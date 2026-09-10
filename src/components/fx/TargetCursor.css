@@ -1,0 +1,80 @@
+.target-cursor-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  z-index: 2147483647;
+  mix-blend-mode: difference;
+  transform: translate(-50%, -50%);
+}
+
+/*
+ * TargetCursor aktif (komponen menambah class `target-cursor-active`
+ * ke <body>): sembunyikan kursor native di SEMUA elemen.
+ * `body { cursor: none }` saja tidak cukup — link/button punya
+ * `cursor: pointer` dari UA/Tailwind yang menimpa nilai turunan,
+ * jadi kursor asli "bocor" saat hover elemen interaktif.
+ * @media (pointer: fine) → perangkat sentuh tidak terpengaruh.
+ */
+@media (pointer: fine) {
+  body.target-cursor-active,
+  body.target-cursor-active a,
+  body.target-cursor-active button,
+  body.target-cursor-active [role='button'],
+  body.target-cursor-active label,
+  body.target-cursor-active select,
+  body.target-cursor-active input,
+  body.target-cursor-active textarea,
+  body.target-cursor-active .cursor-target,
+  body.target-cursor-active .cursor-target * {
+    cursor: none !important;
+  }
+}
+
+.target-cursor-dot {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 4px;
+  height: 4px;
+  background: #fff;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  will-change: transform;
+}
+
+.target-cursor-corner {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  border: 3px solid #fff;
+  will-change: transform;
+}
+
+.corner-tl {
+  transform: translate(-150%, -150%);
+  border-right: none;
+  border-bottom: none;
+}
+
+.corner-tr {
+  transform: translate(50%, -150%);
+  border-left: none;
+  border-bottom: none;
+}
+
+.corner-br {
+  transform: translate(50%, 50%);
+  border-left: none;
+  border-top: none;
+}
+
+.corner-bl {
+  transform: translate(-150%, 50%);
+  border-right: none;
+  border-top: none;
+}
