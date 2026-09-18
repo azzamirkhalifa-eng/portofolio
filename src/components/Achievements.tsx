@@ -4,6 +4,7 @@ import SectionLabel from './ui/SectionLabel'
 import SectionBox from './ui/SectionBox'
 import Button from './ui/Button'
 import InlineImage from './edit/InlineImage'
+import SmoothImage from './ui/SmoothImage'
 import { MiniBtn, selectCls } from './edit/controls'
 import AchievementCategoryManager from './edit/AchievementCategoryManager'
 import { useEditMode } from '../context/EditModeContext'
@@ -90,15 +91,17 @@ function AchievementCard({
           folder="achievements"
           uploadLabel="Ganti Sertifikat"
           shapeClass="rounded-none"
+          cropContext="achievement"
+          cropTitle="Sertifikat Achievement"
           onSave={async (url) => {
             await save({ image_url: url })
           }}
         >
           {item.image_url ? (
-            <img
+            <SmoothImage
               src={item.image_url}
               alt={`Sertifikat ${pick(item.title, item.title_en, lang)}`}
-              loading="lazy"
+              sizes="(min-width:768px) 33vw, 100vw"
               className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.05]"
             />
           ) : (

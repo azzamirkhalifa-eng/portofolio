@@ -10,6 +10,7 @@ import { MiniBtn, selectCls } from './edit/controls'
 import PhotoSizeControls from './edit/PhotoSizeControls'
 import PhotoFrame from './edit/PhotoFrame'
 import { useEditMode } from '../context/EditModeContext'
+import RichTextBilingual from './edit/RichTextBilingual'
 import {
   addSkill,
   deleteSkill,
@@ -19,6 +20,7 @@ import {
   updateSkillProficiency,
 } from '../lib/mutations'
 import type { Profile, Skill } from '../types'
+import { frameDimsLabel } from '../lib/photoDims'
 
 type AboutProps = {
   profile: Profile | null
@@ -337,12 +339,15 @@ export default function About({ profile, skills, loading }: AboutProps) {
         {/* Foto About dengan efek TiltedCard (SAMA seperti di Hero).
             Foto dari kolom about_avatar_url (bisa diganti admin lewat
             dashboard atau klik area foto saat Mode Edit). */}
+        {/* Pembungkus foto: lebar aktual mengikuti bingkai (slider, atau
+            bingkai hasil crop bila foto ber-token rasio). */}
         <div
-          className={photoRight ? 'sm:order-2' : ''}
+          className={`${photoRight ? 'sm:order-2' : ''} sm:sticky sm:top-24 sm:self-start`}
           style={
             {
-              width: `min(100%, ${aboutSize.width}px)`,
+              width: `min(100%, var(--photo-w))`,
               marginInline: 'auto',
+              '--photo-w': `${aboutSize.width}px`,
             } as CSSProperties
           }
         >
@@ -373,6 +378,8 @@ export default function About({ profile, skills, loading }: AboutProps) {
             folder="avatars"
             uploadLabel="Ganti Foto About"
             shapeClass="rounded-lg"
+            cropContext="about"
+            cropTitle="Foto About"
             onSave={async (url) => {
               await updateProfile({ about_avatar_url: url })
             }}
@@ -397,7 +404,11 @@ export default function About({ profile, skills, loading }: AboutProps) {
           {enabled && profile && (
             <PhotoSizeControls
               fieldPrefix="about_photo"
-              label="Ukuran Foto About"
+              label={`Ukuran Foto About — ${frameDimsLabel(
+                profile?.about_avatar_url || profile?.avatar_url,
+                aboutSize.width,
+                aboutSize.height,
+              )}`}
               width={profile.about_photo_width ?? 340}
               height={profile.about_photo_height ?? 420}
               onPreview={setSizeOverride}
@@ -454,8 +465,8 @@ export default function About({ profile, skills, loading }: AboutProps) {
             />
           </h2>
 
-          <div className="body-text mt-6 leading-relaxed text-muted">
-            <InlineTextBilingual
+          <div className="body-text mt-6 leading-[1.8] text-muted">
+            <RichTextBilingual
               valueId={profile?.about_text ?? ''}
               valueEn={profile?.about_text_en ?? ''}
               onSaveId={async (v) => {

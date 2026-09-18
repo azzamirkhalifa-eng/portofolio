@@ -230,3 +230,48 @@ section .bg-glow-accent,
 main .bg-glow-accent {
   display: none !important;
 }
+
+/*
+ * SmoothImage: fade-in sekali saat gambar selesai dimuat.
+ * Animation (bukan transition) supaya tidak menimpa
+ * transition-transform hover yang mungkin dipakai pemanggil.
+ */
+@keyframes img-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.img-fade-in {
+  animation: img-fade-in 0.5s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .img-fade-in {
+    animation: none;
+  }
+}
+/* ── Lightbox (yet-another-react-lightbox) — tema situs ───────────────
+   Import urut: styles.css YARL → index.css, jadi override di sini
+   menang tanpa !important. Latar lebih pekat + blur ala lightbox lama,
+   tombol bundler halus ala situs, font JetBrains Mono untuk counter. */
+.project-lightbox .yarl__container {
+  --yarl__color_backdrop: rgb(5 8 14 / 0.92);
+  --yarl__color_button: rgb(242 245 250 / 0.8);
+  --yarl__color_button_active: #ffffff;
+  --yarl__button_filter: none;
+}
+
+.project-lightbox .yarl__button {
+  border-radius: 9999px;
+  transition: color 0.15s ease;
+}
+
+.project-lightbox .yarl__counter {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.05em;
+}

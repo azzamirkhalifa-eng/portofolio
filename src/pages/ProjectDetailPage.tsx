@@ -1,6 +1,5 @@
-import { useCallback, useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
-import { AnimatePresence, motion } from 'framer-motion'
+import { useCallback, useEffect, useState, useMemo, lazy, Suspense } from 'react'
+import { Link, useLocation, useParams } from 'react-router-dom'
 import SectionLabel from '../components/ui/SectionLabel'
 import Badge from '../components/ui/Badge'
 import Button from '../components/ui/Button'
@@ -9,10 +8,33 @@ import { useCategories } from '../hooks/useCategories'
 import { useEditMode } from '../context/EditModeContext'
 import { useLanguage } from '../context/LanguageContext'
 import { pick, t, ui } from '../lib/i18n'
+import RichText from '../components/ui/RichText'
+import SmoothImage from '../components/ui/SmoothImage'
+import AdaptiveImage from '../components/ui/AdaptiveImage'
+import ProjectLightbox from '../components/ui/ProjectLightbox'
+import FeatureItems, {
+  type FeatureImageSideMode,
+} from '../components/ui/FeatureItems'
+import FeatureItemsEditor from '../components/edit/FeatureItemsEditor'
+// Builder (Puck) di-lazy-load: bundle-nya besar & hanya dipakai admin
+// (editor) / project dengan builder_json (renderer) — halaman publik
+// biasa tidak pernah memuatnya.
+const ProjectBuilderEditor = lazy(
+  () => import('../components/edit/puck/ProjectBuilderEditor'),
+)
+const ProjectBuilderRenderer = lazy(
+  () => import('../components/edit/puck/ProjectBuilderRenderer'),
+)
+import { defaultBuilderDoc } from '../lib/builderData'
+import { parseBuilderDoc } from '../types/builder'
+import { effectiveFeatureItems, splitIntro } from '../lib/featureItems'
+import type { Slide } from 'yet-another-react-lightbox'
+import RichDescription from '../components/edit/RichDescription'
 import {
   hasRecordedProjectView,
   markProjectViewRecorded,
   recordProjectView,
+  updateProject,
 } from '../lib/mutations'
 import type { ContentBlock, Project, ProjectButton } from '../types'
 
@@ -79,124 +101,44 @@ function projectButtons(project: Project): ProjectButton[] {
 /**
  * Galeri screenshot — susunan masonry (kolom CSS) dengan tinggi
  * mengikuti rasio asli foto (TIDAK dipotong). Klik untuk memperbesar
- * lewat lightbox (panah ←/→, Esc menutup).
+ * lewat lightbox (dikontrol parent).
  */
-function Gallery({ title, images }: { title: string; images: string[] }) {
-  const [openIndex, setOpenIndex] = useState<number | null>(null)
-
-  const close = useCallback(() => setOpenIndex(null), [])
-  const step = useCallback(
-    (dir: 1 | -1) => {
-      setOpenIndex((i) =>
-        i === null ? null : (i + dir + images.length) % images.length,
-      )
-    },
-    [images.length],
-  )
-
-  useEffect(() => {
-    if (openIndex === null) return
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') close()
-      if (e.key === 'ArrowRight') step(1)
-      if (e.key === 'ArrowLeft') step(-1)
-    }
-    document.addEventListener('keydown', onKey)
-    return () => document.removeEventListener('keydown', onKey)
-  }, [openIndex, close, step])
-
+function Gallery({
+  title,
+  images,
+  allImages,
+  onOpen,
+}: {
+  title: string
+  images: string[]
+  allImages: string[]
+  onOpen: (index: number) => void
+}) {
   return (
     <>
       {/* Masonry: tiap item utuh (break-inside-avoid), tinggi foto asli */}
       <div className="columns-1 gap-4 sm:columns-2 lg:columns-3">
-        {images.map((src, i) => (
+      {images.map((src, i) => {
+        const globalIndex = allImages.indexOf(src)
+        return (
           <div key={src + i} className="mb-4 break-inside-avoid">
             <button
               type="button"
-              onClick={() => setOpenIndex(i)}
-              aria-label={`Perbesar gambar ${i + 1} dari ${images.length}`}
+              onClick={() => onOpen(globalIndex)}
+              aria-label={`Perbesar gambar ${globalIndex + 1} dari ${allImages.length}`}
               className="group block w-full overflow-hidden rounded-lg border border-hairline bg-surface-2 transition-colors hover:border-white/25"
             >
-              <img
+              <SmoothImage
                 src={src}
-                alt={`${title} — gambar ${i + 1}`}
-                loading="lazy"
+                alt={`${title} — gambar ${globalIndex + 1}`}
+                sizes="(min-width:1024px) 25vw, (min-width:640px) 50vw, 100vw"
                 className="block w-full h-auto rounded-[calc(0.5rem-1px)] transition-transform duration-500 group-hover:scale-[1.02]"
               />
             </button>
           </div>
-        ))}
+        )
+      })}
       </div>
-
-      <AnimatePresence>
-        {openIndex !== null && (
-          <motion.div
-            role="dialog"
-            aria-modal="true"
-            aria-label="Pratinjau gambar"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.18 }}
-            onClick={close}
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm sm:p-10"
-          >
-            <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              transition={{ duration: 0.18, ease: 'easeOut' }}
-              onClick={(e) => e.stopPropagation()}
-              className="relative"
-            >
-              <img
-                src={images[openIndex]}
-                alt={`${title} — gambar ${openIndex + 1}`}
-                className="max-h-[85vh] max-w-[90vw] rounded-lg border border-hairline object-contain"
-              />
-              <p className="absolute -bottom-7 left-1/2 -translate-x-1/2 font-mono text-xs text-white/50">
-                {openIndex + 1} / {images.length}
-              </p>
-            </motion.div>
-
-            {images.length > 1 && (
-              <>
-                <button
-                  type="button"
-                  aria-label="Gambar sebelumnya"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    step(-1)
-                  }}
-                  className="absolute left-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-black/50 text-lg text-white/80 transition-colors hover:border-white/40 hover:text-white sm:left-6"
-                >
-                  ←
-                </button>
-                <button
-                  type="button"
-                  aria-label="Gambar berikutnya"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    step(1)
-                  }}
-                  className="absolute right-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-black/50 text-lg text-white/80 transition-colors hover:border-white/40 hover:text-white sm:right-6"
-                >
-                  →
-                </button>
-              </>
-            )}
-
-            <button
-              type="button"
-              aria-label="Tutup pratinjau"
-              onClick={close}
-              className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-black/50 text-white/80 transition-colors hover:border-white/40 hover:text-white"
-            >
-              ✕
-            </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </>
   )
 }
@@ -219,18 +161,17 @@ function ContentBlocks({ blocks }: { blocks: ContentBlock[] }) {
       {blocks.map((block) => {
         if (block.type === 'text') {
           return (
-            <p
+            <RichText
               key={block.id}
-              className={`${blockWidthCls[block.width]} whitespace-pre-line leading-relaxed text-muted`}
-            >
-              {block.text}
-            </p>
+              text={block.text}
+              className={`${blockWidthCls[block.width]} leading-[1.8] text-muted`}
+            />
           )
         }
         if (block.type === 'image') {
           return (
             <div key={block.id} className={blockWidthCls[block.width]}>
-              <img src={block.src} alt={block.alt} loading="lazy" className={imgCls} />
+              <SmoothImage src={block.src} alt={block.alt} className={imgCls} />
             </div>
           )
         }
@@ -238,15 +179,12 @@ function ContentBlocks({ blocks }: { blocks: ContentBlock[] }) {
         return (
           <div key={block.id} className="grid items-start gap-6 sm:grid-cols-2">
             <div className={imageRight ? 'sm:order-2' : ''}>
-              <img src={block.src} alt={block.alt} loading="lazy" className={imgCls} />
+              <SmoothImage src={block.src} alt={block.alt} className={imgCls} />
             </div>
-            <p
-              className={`whitespace-pre-line leading-relaxed text-muted ${
-                imageRight ? 'sm:order-1' : ''
-              }`}
-            >
-              {block.text}
-            </p>
+            <RichText
+              text={block.text}
+              className={`leading-[1.8] text-muted ${imageRight ? 'sm:order-1' : ''}`}
+            />
           </div>
         )
       })}
@@ -329,7 +267,7 @@ function PrevNextNav({
             {next.title}
           </span>
         </Link>
-      ) : (
+) : (
         <span />
       )}
     </nav>
@@ -341,7 +279,7 @@ function DetailSkeleton() {
     <div className="mx-auto max-w-5xl animate-pulse px-6 pb-24 pt-10">
       <div className="h-3 w-32 rounded bg-surface-2" />
       <div className="mt-8 h-12 w-2/3 rounded bg-surface-2" />
-      <div className="mt-6 aspect-video rounded-lg bg-surface-2" />
+      <div className="mt-6 aspect-[3/4] rounded-lg bg-surface-2 lg:aspect-video" />
       <div className="mt-12 h-4 w-40 rounded bg-surface-2" />
       <div className="mt-4 h-4 w-full rounded bg-surface-2" />
       <div className="mt-2 h-4 w-5/6 rounded bg-surface-2" />
@@ -363,6 +301,18 @@ function DetailSkeleton() {
  */
 export default function ProjectDetailPage() {
   const { slug } = useParams<{ slug: string }>()
+  // Query param ?fitur=kiri|kanan — preview pola posisi gambar poin fitur
+  // selain default (konstanta FEATURE_IMAGE_SIDE). Tanpa param = default.
+  const location = useLocation()
+  const sidePreview = new URLSearchParams(location.search).get('fitur')
+  const sideMode: FeatureImageSideMode | undefined =
+    sidePreview === 'kiri'
+      ? 'left'
+      : sidePreview === 'kanan'
+        ? 'right'
+        : sidePreview === 'zigzag'
+          ? 'zigzag'
+          : undefined
   const { projects, loading } = useProjects()
   const { categories } = useCategories()
 
@@ -393,6 +343,84 @@ export default function ProjectDetailPage() {
       ? categories.find((c) => c.id === project.category_id)?.name
       : undefined
 
+  // ── Data gambar & hooks lightbox — SEMUA dipanggil di atas early return
+  //    (aturan Rules of Hooks: urutan hook harus sama tiap render, dan
+  //    status loading → loaded tidak boleh mengganti urutan hook).
+  const mainImage = project ? project.image_url || project.gallery?.[0] || '' : ''
+  const shots = useMemo(
+    () =>
+      project
+        ? (project.gallery ?? []).filter((src) => src !== mainImage)
+        : [],
+    [project, mainImage],
+  )
+  // Poin fitur efektif: DB sudah dimigrasi → kolom feature_items;
+  // belum → dipecah on-the-fly dari full_description (read-only, tanpa
+  // menulis DB). Bagian 3: gambar yang sudah terpasang di poin fitur
+  // tidak diulang di galeri (galeri = screenshot TAMBAHAN saja).
+  const featureItems = useMemo(
+    () => (project ? effectiveFeatureItems(project) : []),
+    [project],
+  )
+  const featureImages = useMemo(
+    () =>
+      featureItems
+        .map((it) => it.image_url.trim())
+        .filter((src) => src !== ''),
+    [featureItems],
+  )
+  const galleryShots = useMemo(
+    () => shots.filter((src) => !featureImages.includes(src)),
+    [shots, featureImages],
+  )
+  // Lightbox = [gambar utama, ...gambar fitur, ...galeri].
+  const allImages = useMemo(
+    () =>
+      [...(mainImage ? [mainImage] : []), ...featureImages, ...galleryShots],
+    [mainImage, featureImages, galleryShots],
+  )
+  // Peta URL gambar fitur → indeks slide absolut, untuk klik → lightbox.
+  const featureImageIndex = useMemo(() => {
+    const map = new Map<string, number>()
+    featureImages.forEach((src, i) => map.set(src, (mainImage ? 1 : 0) + i))
+    return map
+  }, [featureImages, mainImage])
+
+  // Lightbox state (dibagikan main image + gallery). Komponen YARL
+  // dirender TERUS (bukan conditional) supaya animasi buka-tutupnya
+  // jalan — prop `open` yang menentukan tampil/tidak.
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
+
+  // ── VISUAL PAGE BUILDER (prototipe — section fitur project) ──
+  // builderOpen: overlay builder fullscreen aktif. Doc builder:
+  // builder_json dari DB (admin pernah menyimpan) → pakai itu; NULL →
+  // fallback lama (feature_items zigzag) tetap dirender & builder tetap
+  // bisa dibuka dengan doc default hasil konversi feature_items.
+  const [builderOpen, setBuilderOpen] = useState(false)
+  const builderDoc = useMemo(
+    () => (project ? parseBuilderDoc(project.builder_json) ?? defaultBuilderDoc(project) : null),
+    [project],
+  )
+  const openLightbox = useCallback(
+    (index: number) => {
+      if (index >= 0 && index < allImages.length) setLightboxIndex(index)
+    },
+    [allImages.length],
+  )
+  const closeLightbox = useCallback(() => setLightboxIndex(null), [])
+
+  // Slide lightbox = [gambar utama, ...galeri]. Referensi HARUS stabil
+  // (useMemo) sesuai ketentuan prop `slides` YARL — parent bisa re-render
+  // saat lightbox terbuka (mis. data refresh) tanpa me-reset carousel.
+  const lightboxSlides = useMemo<Slide[]>(
+    () =>
+      allImages.map((src, i) => ({
+        src,
+        alt: `${project?.title ?? 'Project'} — gambar ${i + 1}`,
+      })),
+    [allImages, project?.title],
+  )
+
   if (loading) {
     return <DetailSkeleton />
   }
@@ -417,16 +445,13 @@ export default function ProjectDetailPage() {
     )
   }
 
-  // Gambar utama (kanan atas) & sisa screenshot untuk galeri masonry.
-  const mainImage = project.image_url || project.gallery?.[0] || ''
-  const shots = (project.gallery ?? [])
-    // Kalau gambar utama diambil dari galeri, jangan tampil dua kali.
-    .filter((src) => src !== mainImage)
-
   const buttons = projectButtonsLang(projectButtons(project), lang)
   const description =
     pick(project.full_description, project.full_description_en, lang) ||
     pick(project.description, project.description_en, lang)
+  // Hero layout: paragraf pembuka dipisah dari sisa deskripsi (list
+  // bernomor fitur). Keduanya tetap disimpan utuh di satu kolom.
+  const { intro, rest: descRest } = splitIntro(description)
 
   // Tombol CTA utama (kolom cta_label/cta_url) — tampil tepat di atas
   // kategori & judul. URL kosong = tombol disembunyikan.
@@ -481,53 +506,136 @@ export default function ProjectDetailPage() {
         </div>
       )}
 
-      {/* Kolom utama: kiri = judul + deskripsi, kanan = gambar utama */}
-      <div className="mt-10 grid items-start gap-10 lg:grid-cols-2 lg:gap-14">
-        {/* Kiri — teks */}
-        <div className="min-w-0">
-          <p className="font-mono text-xs uppercase tracking-[0.25em] text-accent">
-            {categoryName ?? t(ui.projects, lang)}
-          </p>
-          <h1 className="mt-3 text-4xl font-extrabold tracking-tight sm:text-5xl">
-            {pick(project.title, project.title_en, lang)}
-          </h1>
-
-          {description && (
-            <p className="mt-6 whitespace-pre-line leading-relaxed text-muted">
-              {description}
-            </p>
-          )}
-
-          {project.tags.length > 0 && (
-            <div className="mt-6 flex flex-wrap gap-1.5">
-              {project.tags.map((tag) => (
-                <Badge key={tag}>{tag}</Badge>
-              ))}
-            </div>
-          )}
+      {/* ── HERO: gambar utama full-width di atas ──
+          Kotak menyesuaikan rasio asli gambar (deteksi dinamis), tinggi
+          dibatasi ~70vh — dikonversi jadi batas lebar oleh AdaptiveImage
+          supaya kotak tidak pernah pecah rasio. Screenshot potrait tampil
+          proporsional (tidak gepeng), landscape memenuhi lebar hero.
+          Klik gambar → lightbox (hanya saat Mode Edit MATI). */}
+      {mainImage && (
+        <div className="mt-10">
+          <AdaptiveImage
+            src={mainImage}
+            alt={`Gambar utama ${project.title}`}
+            sizes="100vw"
+            fallbackRatio={3 / 4}
+            maxHeight="70vh"
+            className="w-full"
+            priority
+            onClick={editMode ? undefined : () => openLightbox(0)}
+          />
         </div>
+      )}
 
-        {/* Kanan — gambar utama dengan rasio asli (tidak dipotong) */}
-        {mainImage && (
-          <div className="flex justify-center">
-            <img
-              src={mainImage}
-              alt={`Gambar utama ${project.title}`}
-              loading="lazy"
-              className="h-auto max-h-[80vh] w-full max-w-[44rem] rounded-xl border border-hairline object-contain"
-            />
+      {/* Identitas project di bawah hero: kategori → judul → tags → intro.
+          Kolom teks dibatasi ~736px supaya nyaman dibaca (tidak full lebar). */}
+      <div className="mt-10 max-w-[46rem]">
+        <p className="font-mono text-xs uppercase tracking-[0.25em] text-accent">
+          {categoryName ?? t(ui.projects, lang)}
+        </p>
+        <h1 className="mt-3 text-4xl font-extrabold tracking-tight sm:text-5xl">
+          {pick(project.title, project.title_en, lang)}
+        </h1>
+
+        {project.tags.length > 0 && (
+          <div className="mt-5 flex flex-wrap gap-1.5">
+            {project.tags.map((tag) => (
+              <Badge key={tag}>{tag}</Badge>
+            ))}
           </div>
+        )}
+
+        {/* Paragraf pembuka — editor hanya menyimpan gabungan intro + sisa
+            supaya full_description tetap utuh (tidak ada bagian terbuang). */}
+        {intro && (
+          <RichDescription
+            className="mt-6 leading-[1.8] text-muted"
+            ariaLabel="Edit paragraf pembuka project"
+            value={intro}
+            onSave={async (v) => {
+              await updateProject(project.id, {
+                [lang === 'en' ? 'full_description_en' : 'full_description']:
+                  [v, descRest].filter((s) => s.trim() !== '').join('\n\n'),
+              })
+            }}
+          />
         )}
       </div>
 
-      {/* Galeri screenshot (masonry, tinggi asli) */}
-      {shots.length > 0 && (
+      {/* Sisa deskripsi (list bernomor fitur) — BAGIAN 2: kini dirender
+          sebagai feature_items selang-seling teks ↔ gambar. Fallback
+          on-the-fly menangani project lama yang belum dimigrasi DB.
+          Kalau sisa deskripsi ADA tapi tidak bisa dipecah jadi poin
+          (tidak berpola "1. ..."), dirender apa adanya supaya tidak ada
+          teks yang hilang. Mode Edit: editor poin fitur
+          (tambah/hapus/urutan/gambar). */}
+      {/* Section fitur: tampil bila ADA poin terurai ATAU ADA sisa
+          deskripsi. Poin fitur dari DB (feature_items terisi) tetap
+          dirender meski rest kosong — konten jangan hilang. Kalau sisa
+          deskripsi ADA tapi tidak bisa dipecah jadi poin (tidak berpola
+          "1. ..."), dirender apa adanya (RichText) supaya tidak ada teks
+          yang hilang. Editor poin fitur tersedia di SEMUA project saat
+          Mode Edit — juga untuk project baru yang belum punya poin. */}
+      {(descRest !== '' || featureItems.length > 0) && (
+        <section className="mt-12">
+          {builderDoc !== null ? (
+            /* Page builder aktif: renderer publik = komponen yang sama
+               dengan canvas editor (Puck.Render). Elemen non-feature
+               (heading/text/image/button) ikut tampil di sini. */
+            <Suspense fallback={null}>
+              <ProjectBuilderRenderer doc={builderDoc} />
+            </Suspense>
+          ) : featureItems.length > 0 ? (
+            <FeatureItems
+              items={featureItems}
+              onOpenImage={(src) => openLightbox(featureImageIndex.get(src) ?? 0)}
+              projectTitle={project.title}
+              sideMode={sideMode}
+            />
+          ) : (
+            <RichText
+              text={descRest}
+              className="max-w-[46rem] leading-[1.8] text-muted"
+            />
+          )}
+          {editMode && (
+            <div className="max-w-[46rem]">
+              {/* Editor lama TETAP tersedia (fallback selama prototipe
+                  builder): poin fitur tetap bisa diedit dari sini. */}
+              {builderOpen ? null : <FeatureItemsEditor project={project} />}
+            </div>
+          )}
+        </section>
+      )}
+
+      {/* Galeri screenshot TAMBAHAN (Bagian 3) — gambar yang sudah
+          terpasang di poin fitur otomatis difilter agar tidak diulang. */}
+      {galleryShots.length > 0 && (
         <section className="mt-16">
           <SectionLabel>{t(ui.galeri, lang)}</SectionLabel>
           <div className="mt-6">
-            <Gallery title={project.title} images={shots} />
+            <Gallery
+              title={project.title}
+              images={galleryShots}
+              allImages={allImages}
+              onOpen={openLightbox}
+            />
           </div>
         </section>
+      )}
+
+      {/* Lightbox (shared: main image + gallery) — yet-another-react-lightbox:
+          tutup via ✕ / Esc / klik area gelap; pindah gambar via panah di
+          layar, keyboard ←/→, atau swipe (animasi geser native).
+          Scroll body otomatis dikunci oleh modul NoScroll YARL. */}
+      {allImages.length > 0 && (
+        <ProjectLightbox
+          open={lightboxIndex !== null}
+          index={lightboxIndex ?? 0}
+          slides={lightboxSlides}
+          onClose={closeLightbox}
+          onView={setLightboxIndex}
+        />
       )}
 
       {/* Blok konten fleksibel */}
@@ -547,6 +655,34 @@ export default function ProjectDetailPage() {
 
       {/* Prev / next */}
       <PrevNextNav prev={prev} next={next} />
+
+      {/* ── VISUAL PAGE BUILDER (prototipe) — pintu masuk FIXED kiri-bawah
+          saat Mode Edit: selalu terlihat walau section fitur kosong,
+         tidak lagi tersembunyi di dalam section. */}
+      {editMode && builderDoc !== null && !builderOpen && (
+        <button
+          type="button"
+          onClick={() => setBuilderOpen(true)}
+          className="fixed bottom-5 left-5 z-40 inline-flex items-center gap-2 rounded-md bg-accent px-4 py-2.5 text-sm font-medium text-white shadow-lg shadow-black/30 transition-colors hover:bg-accent-hover"
+        >
+          🧩 Visual Builder
+          <span className="hidden font-mono text-[10px] font-normal uppercase tracking-[0.15em] text-white/70 sm:inline">
+            drag &amp; drop
+          </span>
+        </button>
+      )}
+
+      {/* Overlay fullscreen di atas halaman; Mode Edit lama TETAP
+          berfungsi sebagai fallback. */}
+      {builderOpen && builderDoc !== null && (
+        <Suspense fallback={null}>
+          <ProjectBuilderEditor
+            project={project}
+            doc={builderDoc}
+            onDone={() => setBuilderOpen(false)}
+          />
+        </Suspense>
+      )}
     </article>
   )
 }

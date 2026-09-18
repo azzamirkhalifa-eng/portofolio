@@ -7,6 +7,9 @@ import { useAchievements } from '../hooks/useAchievements'
 import { useAchievementCategories } from '../hooks/useAchievementCategories'
 import { useLanguage } from '../context/LanguageContext'
 import { pick, t, ui } from '../lib/i18n'
+import RichDescription from '../components/edit/RichDescription'
+import SmoothImage from '../components/ui/SmoothImage'
+import { updateAchievement } from '../lib/mutations'
 
 /** Galeri masonry + lightbox — pola sama dengan halaman detail project. */
 function Gallery({ title, images }: { title: string; images: string[] }) {
@@ -44,10 +47,10 @@ function Gallery({ title, images }: { title: string; images: string[] }) {
               aria-label={`Perbesar gambar ${i + 1} dari ${images.length}`}
               className="group block w-full overflow-hidden rounded-lg border border-hairline bg-surface-2 transition-colors hover:border-white/25"
             >
-              <img
+              <SmoothImage
                 src={src}
                 alt={`${title} — gambar ${i + 1}`}
-                loading="lazy"
+                sizes="(min-width:1024px) 25vw, (min-width:640px) 50vw, 100vw"
                 className="block h-auto w-full rounded-[calc(0.5rem-1px)] transition-transform duration-500 group-hover:scale-[1.02]"
               />
             </button>
@@ -227,19 +230,29 @@ export default function AchievementDetailPage() {
           )}
 
           {description && (
-            <p className="mt-6 whitespace-pre-line leading-relaxed text-muted">
-              {description}
-            </p>
+            <RichDescription
+              className="mt-6 leading-[1.8] text-muted"
+              ariaLabel="Edit deskripsi lengkap pencapaian"
+              value={description}
+              onSave={async (v) => {
+                await updateAchievement(item.id, {
+                  [lang === 'en' ? 'full_description_en' : 'full_description']:
+                    v,
+                })
+              }}
+            />
           )}
         </div>
 
-        {/* Kanan — foto utama, rasio asli (tidak dipotong) */}
+        {/* Kanan — foto utama, rasio asli (tidak dipotong).
+            Desktop: sticky mengikuti scroll (sama seperti detail project);
+            mobile: stack normal. */}
         {mainImage && (
-          <div className="flex justify-center">
-            <img
+          <div className="flex justify-center lg:sticky lg:top-24 lg:self-start">
+            <SmoothImage
               src={mainImage}
               alt={`Foto ${item.title}`}
-              loading="lazy"
+              sizes="(min-width:1024px) 55vw, 100vw"
               className="h-auto max-h-[80vh] w-full max-w-[44rem] rounded-xl border border-hairline object-contain"
             />
           </div>

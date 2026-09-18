@@ -13,6 +13,7 @@ import { useLanguage } from '../context/LanguageContext'
 import { t, ui } from '../lib/i18n'
 import { updateProfile } from '../lib/mutations'
 import TiltedAvatar from './fx/TiltedAvatar'
+import { frameDimsLabel } from '../lib/photoDims'
 import type { Profile } from '../types'
 
 type HeroProps = {
@@ -202,10 +203,14 @@ export default function Hero({ profile, loading }: HeroProps) {
               Ukuran frame (px) diatur admin via slider Mode Edit
               (hero_photo_width/height); container tetap responsif
               (max-w-xs/sm) supaya tidak overflow di layar kecil. */}
+          {/* Pembungkus foto: lebarnya = lebar bingkai aktual (slider,
+              atau bingkai hasil crop bila foto ber-token rasio) supaya
+              kotak klik-ganti-foto tepat mengelilingi foto — bukan kotak
+              slider penuh di sekeliling foto landscape yang kecil. */}
           <div
-            className="relative mx-auto w-full max-w-[min(100%,var(--photo-w))] lg:mt-0"
+            className="relative mx-auto w-full lg:mt-0"
             style={{
-              '--photo-w': `${heroSize.width}px`,
+              width: `min(100%, var(--photo-w))`,
             } as CSSProperties}
           >
             {/* Bingkai gaya Canva: bentuk bingkai + drag fokus foto
@@ -234,6 +239,8 @@ export default function Hero({ profile, loading }: HeroProps) {
               folder="avatars"
               uploadLabel="Ganti Foto Profil"
               shapeClass="rounded-2xl"
+              cropContext="hero"
+              cropTitle="Foto Hero"
               onSave={async (url) => {
                 await updateProfile({ avatar_url: url })
               }}
@@ -244,6 +251,7 @@ export default function Hero({ profile, loading }: HeroProps) {
                   src={profile.avatar_url}
                   alt={`Foto ${profile.name}`}
                   captionText={profile.name}
+                  priority
                   maxWidth={heroSize.width}
                   maxHeight={heroSize.height}
                   fallback={<AvatarVisual profile={profile} />}
@@ -259,7 +267,11 @@ export default function Hero({ profile, loading }: HeroProps) {
             {enabled && profile && (
               <PhotoSizeControls
                 fieldPrefix="hero_photo"
-                label="Ukuran Foto Hero"
+                label={`Ukuran Foto Hero — ${frameDimsLabel(
+                  profile.avatar_url,
+                  heroSize.width,
+                  heroSize.height,
+                )}`}
                 width={profile.hero_photo_width ?? 420}
                 height={profile.hero_photo_height ?? 520}
                 onPreview={setSizeOverride}

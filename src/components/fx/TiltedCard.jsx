@@ -20,6 +20,8 @@ export default function TiltedCard({
   rotateAmplitude = 14,
   showMobileWarning = true,
   showTooltip = true,
+  /** Above-the-fold (foto Hero): eager + prioritas unduh tinggi. */
+  imagePriority = false,
   overlayContent = null,
   displayOverlayContent = false,
   onMouseEnter = () => {},
@@ -101,6 +103,9 @@ export default function TiltedCard({
           src={imageSrc}
           alt={altText}
           className="tilted-card-img"
+          loading={imagePriority ? 'eager' : 'lazy'}
+          decoding={imagePriority ? 'sync' : 'async'}
+          fetchPriority={imagePriority ? 'high' : undefined}
           style={{
             width: imageWidth,
             height: imageHeight

@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { uploadImage } from '../../lib/storage'
+import type { CropContext } from '../../lib/cropPresets'
 import { MiniBtn } from './controls'
+import CropFrameModal from './CropFrameModal'
 import type { ProjectButton } from '../../types'
 
 /** Id unik untuk tombol baru (tanpa dependensi). */
@@ -24,15 +26,36 @@ type GalleryEditorProps = {
   images: string[]
   onChange: (next: string[]) => void | Promise<void>
   folder: 'avatars' | 'projects' | 'achievements'
+  /**
+   * Konteks bingkai (Fitur 1). Diisi → pilih 1 foto membuka modal crop
+   * ala Canva dulu (pilih bingkai → drag/zoom); pilih banyak foto tetap
+   * langsung upload semua (bulk). Kosong → perilaku lama.
+   */
+  cropContext?: CropContext
+  cropTitle?: string
 }
 
-export function GalleryEditor({ images, onChange, folder }: GalleryEditorProps) {
+export function GalleryEditor({
+  images,
+  onChange,
+  folder,
+  cropContext,
+  cropTitle = 'Foto Galeri',
+}: GalleryEditorProps) {
   const fileRef = useRef<HTMLInputElement>(null)
   const [uploading, setUploading] = useState(false)
   const [urlInput, setUrlInput] = useState('')
+  /** Foto tunggal yang menunggu di-crop sebelum masuk galeri. */
+  const [cropFile, setCropFile] = useState<File | null>(null)
 
   async function handleFiles(files: FileList | null) {
     if (!files || files.length === 0) return
+    // Satu foto + konteks bingkai → buka modal crop dulu.
+    if (cropContext && files.length === 1) {
+      setCropFile(files[0])
+      if (fileRef.current) fileRef.current.value = ''
+      return
+    }
     setUploading(true)
     try {
       const urls: string[] = []
@@ -47,6 +70,22 @@ export function GalleryEditor({ images, onChange, folder }: GalleryEditorProps) 
     } finally {
       setUploading(false)
       if (fileRef.current) fileRef.current.value = ''
+    }
+  }
+
+  /** Hasil crop modal galeri → upload + tambah ke daftar. */
+  async function handleCropped(cropped: File) {
+    setUploading(true)
+    try {
+      const url = await uploadImage(cropped, folder)
+      await onChange([...images, url])
+      setCropFile(null)
+    } catch (err) {
+      window.alert(
+        `Upload gagal: ${err instanceof Error ? err.message : 'terjadi kesalahan.'}`,
+      )
+    } finally {
+      setUploading(false)
     }
   }
 
@@ -129,6 +168,18 @@ export function GalleryEditor({ images, onChange, folder }: GalleryEditorProps) 
         className="hidden"
         onChange={(e) => void handleFiles(e.target.files)}
       />
+
+      {/* Modal crop untuk upload tunggal (Fitur 1) — hasil mengalir ke
+          pipeline kompresi Feature 2 via uploadImage(). */}
+      {cropFile && cropContext && (
+        <CropFrameModal
+          file={cropFile}
+          context={cropContext}
+          title={cropTitle}
+          onCancel={() => setCropFile(null)}
+          onConfirm={handleCropped}
+        />
+      )}
     </div>
   )
 }

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Badge from './ui/Badge'
 import GlareHover from './fx/GlareHover'
+import SmoothImage from './ui/SmoothImage'
 import InlineText from './edit/InlineText'
 import InlineImage from './edit/InlineImage'
 import {
@@ -88,10 +89,10 @@ export default function ProjectCard({
       <>
         <div className="relative aspect-video overflow-hidden border-b border-hairline bg-surface-2">
           {hasThumb ? (
-            <img
+            <SmoothImage
               src={thumbUrl}
               alt={`Preview ${project.title}`}
-              loading="lazy"
+              sizes="(min-width:1024px) 33vw, (min-width:640px) 50vw, 100vw"
               onError={(e) => {
                 const el = e.currentTarget as HTMLImageElement
                 el.style.opacity = '0.4'
@@ -188,13 +189,17 @@ export default function ProjectCard({
           folder="projects"
           uploadLabel="Ganti Gambar"
           shapeClass="rounded-none"
+          cropContext="project-thumbnail"
+          cropTitle="Gambar Project"
           onSave={async (url) => {
             await saveField({ image_url: url })
           }}
         >
-          {hasImage ? (              <img
+          {hasImage ? (
+            <SmoothImage
               src={project.image_url}
               alt={`Preview ${project.title}`}
+              sizes="(min-width:768px) 33vw, 100vw"
               className="h-full w-full object-cover"
               onError={(e) => {
                 (e.currentTarget as HTMLImageElement).style.opacity = '0.4'
@@ -324,6 +329,8 @@ export default function ProjectCard({
                   folder="projects"
                   uploadLabel="Upload Thumbnail"
                   shapeClass="rounded-md"
+                  cropContext="project-thumbnail"
+                  cropTitle="Thumbnail Beranda"
                   onSave={async (url) => {
                     await saveField({ thumbnail_url: url }).catch((err) =>
                       toastErr(err, 'Gagal menyimpan thumbnail'),
@@ -420,6 +427,8 @@ export default function ProjectCard({
               <div className="mt-1.5">
                 <GalleryEditor
                   images={project.gallery}
+                  cropContext="gallery"
+                  cropTitle="Foto Galeri Project"
                   folder="projects"
                   onChange={async (next) => {
                     try {

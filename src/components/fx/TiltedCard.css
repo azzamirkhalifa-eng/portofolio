@@ -29,6 +29,10 @@
 .tilted-card-inner {
   position: relative;
   transform-style: preserve-3d;
+  /* Responsif: kotak gambar (ukuran px dari slider) menyusut bila
+     layar lebih sempit — fotonya ikut menyusut ter-crop (cover),
+     tidak pernah overflow horizontal. */
+  max-width: 100%;
 }
 
 .tilted-card-img {
@@ -39,6 +43,11 @@
   border-radius: 15px;
   will-change: transform;
   transform: translateZ(0);
+  /* Responsif: bingkai tetap ukuran slider (px), tapi di layar lebih
+     sempit dari bingkai, kotak gambar menyusut mengikuti layar —
+     object-fit: cover menjaga foto proporsional (ter-crop, tidak
+     gepeng) dan tidak ada overflow horizontal. */
+  max-width: 100%;
 }
 
 .tilted-card-overlay {

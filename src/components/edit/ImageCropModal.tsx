@@ -38,9 +38,18 @@ export default function ImageCropModal({
   const dragRef = useRef<DragState>(null)
 
   useEffect(() => {
-    const url = URL.createObjectURL(file)
-    setSrcUrl(url)
-    return () => URL.revokeObjectURL(url)
+    // Data URL (bukan object URL): tidak bisa di-revoke lebih awal oleh
+    // StrictMode double-mount (mount → unmount → mount), yang membuat
+    // gambar crop tampil hitam di dev.
+    let alive = true
+    const reader = new FileReader()
+    reader.onload = () => {
+      if (alive) setSrcUrl(String(reader.result))
+    }
+    reader.readAsDataURL(file)
+    return () => {
+      alive = false
+    }
   }, [file])
 
   function handleImgLoad() {

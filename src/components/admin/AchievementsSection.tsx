@@ -293,6 +293,8 @@ function AchievementForm({
           images={state.gallery}
           onChange={(next) => set('gallery', next)}
           folder="achievements"
+          cropContext="achievement"
+          cropTitle="Foto Galeri Achievement"
         />
       </div>
 

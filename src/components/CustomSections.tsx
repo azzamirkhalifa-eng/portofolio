@@ -2,7 +2,9 @@ import { useState } from 'react'
 import SectionBox from './ui/SectionBox'
 import InlineText from './edit/InlineText'
 import InlineTextBilingual from './edit/InlineTextBilingual'
+import RichTextBilingual from './edit/RichTextBilingual'
 import InlineImage from './edit/InlineImage'
+import SmoothImage from './ui/SmoothImage'
 import { GhostBtn, MiniBtn, selectCls } from './edit/controls'
 import { useEditMode } from '../context/EditModeContext'
 import { useLanguage } from '../context/LanguageContext'
@@ -48,8 +50,8 @@ function BlockBody({
     </h2>
   )
   const textBlock = (
-    <div className="mt-3 whitespace-pre-line leading-relaxed text-muted">
-      <InlineTextBilingual
+    <div className="mt-3 leading-[1.8] text-muted">
+      <RichTextBilingual
         valueId={section.text}
         valueEn={section.text_en ?? ''}
         enabled={editing}
@@ -139,15 +141,17 @@ function BlockBody({
           folder="projects"
           uploadLabel="Tambah Gambar"
           shapeClass="rounded-lg"
+          cropContext="gallery"
+          cropTitle="Gambar Custom Section"
           onSave={async (url) => {
             await updateCustomSection(section.id, { image_url: url })
           }}
         >
           {section.image_url ? (
-            <img
+            <SmoothImage
               src={section.image_url}
               alt={section.title || 'Gambar blok'}
-              loading="lazy"
+              sizes="(min-width:640px) 50vw, 100vw"
               className="block h-auto max-h-[28rem] w-full rounded-lg border border-hairline object-contain"
             />
           ) : (

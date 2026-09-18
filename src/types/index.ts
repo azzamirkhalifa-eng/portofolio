@@ -103,6 +103,12 @@ export interface Project {
   content_blocks: ContentBlock[]
   /** Tombol aksi bebas (label + URL), tampil di atas halaman detail. */
   buttons: ProjectButton[]
+  /**
+   * Poin-poin fitur dengan gambar pendukung opsional (jsonb array).
+   * Kosong = render publik fallback ke parsing `full_description`
+   * (project lama yang belum dimigrasi tampil normal).
+   */
+  feature_items: FeatureItem[]
   /** Label tombol CTA utama (tampil di atas judul halaman detail). */
   cta_label: string
   /** URL tujuan tombol CTA (kosong = tombol disembunyikan). */
@@ -111,6 +117,14 @@ export interface Project {
   featured: boolean
   /** Penghitung view halaman detail — internal untuk admin, tidak tampil di publik. */
   view_count: number
+  /**
+   * Dokumen visual page builder (prototipe Tahap 2, kolom jsonb
+   * `builder_json` — lihat migration-v18.sql). NULL = render publik
+   * fallback ke sistem lama (feature_items zigzag / parsing
+   * full_description). Struktur & konversi ada di types/builder.ts
+   * dan lib/builderData.ts.
+   */
+  builder_json: unknown
   /** Versi English (Fitur bahasa) — kosong = fallback tampil versi ID. */
   title_en: string
   description_en: string
@@ -122,6 +136,27 @@ export interface Project {
   thumbnail_url?: string
   /** Nama kategori (hasil join categories) — dipakai halaman detail. */
   category_name?: string
+}
+
+/**
+ * Satu poin fitur project (kolom jsonb `feature_items` di tabel projects).
+ * Setiap poin bisa punya gambar pendukung — ditampilkan selang-seling
+ * (zigzag) teks ↔ gambar di halaman detail.
+ */
+export interface FeatureItem {
+  /** Id stabil untuk key React & urutan (tidak tampil). */
+  id: string
+  /** Judul singkat poin (opsional, boleh ''). */
+  title: string
+  /** Judul versi English (opsional, kosong = pakai `title`). */
+  title_en: string
+  /** Deskripsi lengkap poin. */
+  text: string
+  /** Deskripsi versi English (opsional, kosong = pakai `text`).
+   *  Dukung "\n" internal — dirender multi-baris. */
+  text_en: string
+  /** Gambar pendukung (opsional; '' = poin teks-saja full width). */
+  image_url: string
 }
 
 /**

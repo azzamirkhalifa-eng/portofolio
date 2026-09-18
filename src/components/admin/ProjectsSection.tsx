@@ -461,7 +461,13 @@ function ProjectForm({
         <span className="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.15em] text-muted">
           Galeri Screenshot (halaman detail)
         </span>
-        <GalleryEditor images={gallery} onChange={setGallery} folder="projects" />
+        <GalleryEditor
+          images={gallery}
+          onChange={setGallery}
+          folder="projects"
+          cropContext="gallery"
+          cropTitle="Foto Galeri Project"
+        />
       </div>
 
       {/* Spesifikasi (dua bahasa) */}

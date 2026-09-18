@@ -5,6 +5,7 @@ import type {
   Project,
   ProjectButton,
   Achievement,
+  FeatureItem,
 } from '../types'
 import { randomSlug, slugify } from './slug'
 
@@ -83,6 +84,8 @@ export type ProjectFields = {
   specs: Record<string, string>
   content_blocks: unknown[]
   buttons: ProjectButton[]
+  /** Poin fitur + gambar pendukung (jsonb). */
+  feature_items: FeatureItem[]
   cta_label: string
   cta_url: string
   tags: string[]
@@ -98,6 +101,8 @@ export type ProjectFields = {
   buttons_en: ProjectButton[]
   specs_en: Record<string, string>
   tags_en: string[]
+  /** Dokumen visual page builder (jsonb) — null = pakai sistem lama. */
+  builder_json?: unknown
 }
 
 export async function addProject(
