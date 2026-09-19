@@ -101,8 +101,6 @@ export type ProjectFields = {
   buttons_en: ProjectButton[]
   specs_en: Record<string, string>
   tags_en: string[]
-  /** Dokumen visual page builder (jsonb) — null = pakai sistem lama. */
-  builder_json?: unknown
 }
 
 export async function addProject(

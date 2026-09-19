@@ -1,4 +1,4 @@
-import { useState, forwardRef, type ForwardedRef } from 'react'
+import { useState, forwardRef, type ForwardedRef, type ReactNode } from 'react'
 import { dualSrcSet, markVariantMissing } from '../../lib/imgVariant'
 
 type SmoothImageProps = {
@@ -12,6 +12,14 @@ type SmoothImageProps = {
   sizes?: string
   /** Above-the-fold (mis. foto Hero): eager + prioritas tinggi. */
   priority?: boolean
+  /**
+   * Elemen dekoratif yang dirender SETELAH <img> di dalam satu fragmen —
+   * dipakai ZoomCue (overlay + ikon kaca pembesar) pada gambar yang
+   * membuka lightbox. Span di dalamnya absolute → posisi mengikuti
+   * ancestor ter-posisi (pemanggil memasang class .zoom-hover di
+   * wrapper-nya sendiri supaya posisinya benar).
+   */
+  children?: ReactNode
   onError?: (e: React.SyntheticEvent<HTMLImageElement>) => void
   onLoad?: (e: React.SyntheticEvent<HTMLImageElement>) => void
 }
@@ -37,6 +45,7 @@ const SmoothImage = forwardRef<HTMLImageElement, SmoothImageProps>(
       priority = false,
       onError,
       onLoad,
+      children,
     },
     ref: ForwardedRef<HTMLImageElement>
   ) => {
@@ -60,20 +69,23 @@ const SmoothImage = forwardRef<HTMLImageElement, SmoothImageProps>(
     }
 
     return (
-      <img
-        ref={ref}
-        src={src}
-        srcSet={srcSet}
-        sizes={srcSet ? sizes : undefined}
-        alt={alt}
-        loading={priority ? 'eager' : 'lazy'}
-        decoding={priority ? 'sync' : 'async'}
-        fetchPriority={priority ? 'high' : undefined}
-        onLoad={handleLoad}
-        onError={handleError}
-        className={`${className} ${loaded ? 'img-fade-in' : ''}`}
-        style={loaded ? undefined : { backgroundColor: 'var(--color-surface-2)' }}
-      />
+      <>
+        <img
+          ref={ref}
+          src={src}
+          srcSet={srcSet}
+          sizes={srcSet ? sizes : undefined}
+          alt={alt}
+          loading={priority ? 'eager' : 'lazy'}
+          decoding={priority ? 'sync' : 'async'}
+          fetchPriority={priority ? 'high' : undefined}
+          onLoad={handleLoad}
+          onError={handleError}
+          className={`${className} ${loaded ? 'img-fade-in' : ''}`}
+          style={loaded ? undefined : { backgroundColor: 'var(--color-surface-2)' }}
+        />
+        {children}
+      </>
     )
   }
 )

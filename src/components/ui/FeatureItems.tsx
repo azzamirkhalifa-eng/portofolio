@@ -4,6 +4,7 @@ import { featureItemText, featureItemTitle } from '../../lib/featureItems'
 import { useEditMode } from '../../context/EditModeContext'
 import { useLanguage } from '../../context/LanguageContext'
 import SmoothImage from './SmoothImage'
+import ZoomCue from './ZoomCue'
 import { NumberBadge } from './RichText'
 
 /**
@@ -109,7 +110,11 @@ export default function FeatureItems({
                   editMode ? undefined : () => onOpenImage(item.image_url)
                 }
                 aria-label={`Perbesar gambar fitur ${num}`}
-                className="group block w-full cursor-zoom-in overflow-hidden rounded-xl border border-hairline bg-surface-2 transition-colors hover:border-white/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                className={`block w-full overflow-hidden rounded-xl border border-hairline bg-surface-2 transition-colors hover:border-white/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
+                  /* Mode Edit: klik lightbox mati — efek zoom/cue tidak
+                     dipasang supaya hover gambar tetap fokus ke edit. */
+                  editMode ? '' : 'zoom-hover cursor-zoom-in'
+                }`}
               >
                 <SmoothImage
                   src={item.image_url}
@@ -118,13 +123,33 @@ export default function FeatureItems({
                     `${projectTitle} — gambar fitur ${num}`
                   }
                   sizes="(min-width:640px) 50vw, 100vw"
-                  className="block h-auto w-full transition-transform duration-500 group-hover:scale-[1.02]"
-                />
+                  className="block h-auto w-full"
+                >
+                  {!editMode && (
+                    <>
+                      <ZoomCue />
+                      <ZoomCue variant="dot" />
+                    </>
+                  )}
+                </SmoothImage>
               </button>
             </div>
           </div>
         ) : (
-          <div key={item.id} className="flex items-start gap-3">
+          <div
+            key={item.id}
+            className={`flex items-start gap-3 rounded-lg px-3.5 py-3 ${
+              /* Latar selang-seling sangat tipis: item GENAP (urutan
+                 ke-2, ke-4, …) dapat tint biru ±4% (token
+                 --color-accent-faint) — ganjil transparan. */
+              num % 2 === 0 ? 'bg-accent-faint' : ''
+            } ${
+              /* Garis pembatas antar item (item pertama tanpa garis)
+                 — hairline-strong (lebih terang) supaya batas poin
+                 lebih tegas. */
+              num > 1 ? 'border-t border-hairline-strong' : ''
+            }`}
+          >
             <NumberBadge n={String(num)} />
             <div className="min-w-0 flex-1">
               {title && (

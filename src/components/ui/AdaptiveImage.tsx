@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, type CSSProperties, type ImgHTMLAttributes } from 'react'
+import { useState, useRef, useEffect, type CSSProperties, type ImgHTMLAttributes, type ReactNode } from 'react'
 import SmoothImage from './SmoothImage'
 
 type AdaptiveImageProps = {
@@ -7,6 +7,13 @@ type AdaptiveImageProps = {
   className?: string
   sizes?: string
   priority?: boolean
+  /**
+   * Elemen dekoratif (mis. ZoomCue) yang dirender di dalam kotak gambar
+   * — span absolute-nya diposisikan oleh wrapper .zoom-hover di parent
+   * AdaptiveImage (bukan oleh kotak ini), jadi dipasang di sini sekadar
+   * diteruskan ke dalam SmoothImage.
+   */
+  children?: ReactNode
   /** Rasio sementara saat gambar belum termuat (mis. 3/4 untuk screenshot potrait). */
   fallbackRatio?: number
   /**
@@ -31,6 +38,7 @@ export default function AdaptiveImage({
   maxHeight,
   onClick,
   disableAdaptive = false,
+  children,
   ...rest
 }: AdaptiveImageProps) {
   const [ratio, setRatio] = useState<number>(fallbackRatio)
@@ -105,7 +113,9 @@ export default function AdaptiveImage({
         style={loaded ? undefined : { backgroundColor: 'var(--color-surface-2)' }}
         onLoad={() => setLoaded(true)}
         {...rest}
-      />
+      >
+        {children}
+      </SmoothImage>
     </div>
   )
 }

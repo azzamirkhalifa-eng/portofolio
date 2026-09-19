@@ -9,6 +9,7 @@ import { useLanguage } from '../context/LanguageContext'
 import { pick, t, ui } from '../lib/i18n'
 import RichDescription from '../components/edit/RichDescription'
 import SmoothImage from '../components/ui/SmoothImage'
+import ZoomCue from '../components/ui/ZoomCue'
 import { updateAchievement } from '../lib/mutations'
 
 /** Galeri masonry + lightbox — pola sama dengan halaman detail project. */
@@ -45,14 +46,16 @@ function Gallery({ title, images }: { title: string; images: string[] }) {
               type="button"
               onClick={() => setOpenIndex(i)}
               aria-label={`Perbesar gambar ${i + 1} dari ${images.length}`}
-              className="group block w-full overflow-hidden rounded-lg border border-hairline bg-surface-2 transition-colors hover:border-white/25"
+              className="zoom-hover block w-full overflow-hidden rounded-lg border border-hairline bg-surface-2 transition-colors hover:border-white/25"
             >
               <SmoothImage
                 src={src}
                 alt={`${title} — gambar ${i + 1}`}
                 sizes="(min-width:1024px) 25vw, (min-width:640px) 50vw, 100vw"
-                className="block h-auto w-full rounded-[calc(0.5rem-1px)] transition-transform duration-500 group-hover:scale-[1.02]"
+                className="block h-auto w-full rounded-[calc(0.5rem-1px)]"
               />
+              <ZoomCue />
+              <ZoomCue variant="dot" />
             </button>
           </div>
         ))}

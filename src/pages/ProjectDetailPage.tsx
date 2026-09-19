@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, useMemo, lazy, Suspense } from 'react'
+import { useCallback, useEffect, useState, useMemo } from 'react'
 import { Link, useLocation, useParams } from 'react-router-dom'
 import SectionLabel from '../components/ui/SectionLabel'
 import Badge from '../components/ui/Badge'
@@ -12,21 +12,11 @@ import RichText from '../components/ui/RichText'
 import SmoothImage from '../components/ui/SmoothImage'
 import AdaptiveImage from '../components/ui/AdaptiveImage'
 import ProjectLightbox from '../components/ui/ProjectLightbox'
+import ZoomCue from '../components/ui/ZoomCue'
 import FeatureItems, {
   type FeatureImageSideMode,
 } from '../components/ui/FeatureItems'
 import FeatureItemsEditor from '../components/edit/FeatureItemsEditor'
-// Builder (Puck) di-lazy-load: bundle-nya besar & hanya dipakai admin
-// (editor) / project dengan builder_json (renderer) — halaman publik
-// biasa tidak pernah memuatnya.
-const ProjectBuilderEditor = lazy(
-  () => import('../components/edit/puck/ProjectBuilderEditor'),
-)
-const ProjectBuilderRenderer = lazy(
-  () => import('../components/edit/puck/ProjectBuilderRenderer'),
-)
-import { defaultBuilderDoc } from '../lib/builderData'
-import { parseBuilderDoc } from '../types/builder'
 import { effectiveFeatureItems, splitIntro } from '../lib/featureItems'
 import type { Slide } from 'yet-another-react-lightbox'
 import RichDescription from '../components/edit/RichDescription'
@@ -126,14 +116,16 @@ function Gallery({
               type="button"
               onClick={() => onOpen(globalIndex)}
               aria-label={`Perbesar gambar ${globalIndex + 1} dari ${allImages.length}`}
-              className="group block w-full overflow-hidden rounded-lg border border-hairline bg-surface-2 transition-colors hover:border-white/25"
+              className="zoom-hover block w-full overflow-hidden rounded-lg border border-hairline bg-surface-2 transition-colors hover:border-white/25"
             >
               <SmoothImage
                 src={src}
                 alt={`${title} — gambar ${globalIndex + 1}`}
                 sizes="(min-width:1024px) 25vw, (min-width:640px) 50vw, 100vw"
-                className="block w-full h-auto rounded-[calc(0.5rem-1px)] transition-transform duration-500 group-hover:scale-[1.02]"
+                className="block w-full h-auto rounded-[calc(0.5rem-1px)]"
               />
+              <ZoomCue />
+              <ZoomCue variant="dot" />
             </button>
           </div>
         )
@@ -391,16 +383,6 @@ export default function ProjectDetailPage() {
   // jalan — prop `open` yang menentukan tampil/tidak.
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
 
-  // ── VISUAL PAGE BUILDER (prototipe — section fitur project) ──
-  // builderOpen: overlay builder fullscreen aktif. Doc builder:
-  // builder_json dari DB (admin pernah menyimpan) → pakai itu; NULL →
-  // fallback lama (feature_items zigzag) tetap dirender & builder tetap
-  // bisa dibuka dengan doc default hasil konversi feature_items.
-  const [builderOpen, setBuilderOpen] = useState(false)
-  const builderDoc = useMemo(
-    () => (project ? parseBuilderDoc(project.builder_json) ?? defaultBuilderDoc(project) : null),
-    [project],
-  )
   const openLightbox = useCallback(
     (index: number) => {
       if (index >= 0 && index < allImages.length) setLightboxIndex(index)
@@ -513,7 +495,7 @@ export default function ProjectDetailPage() {
           proporsional (tidak gepeng), landscape memenuhi lebar hero.
           Klik gambar → lightbox (hanya saat Mode Edit MATI). */}
       {mainImage && (
-        <div className="mt-10">
+        <div className={`mt-10 ${editMode ? '' : 'zoom-hover'}`}>
           <AdaptiveImage
             src={mainImage}
             alt={`Gambar utama ${project.title}`}
@@ -523,7 +505,14 @@ export default function ProjectDetailPage() {
             className="w-full"
             priority
             onClick={editMode ? undefined : () => openLightbox(0)}
-          />
+          >
+            {!editMode && (
+              <>
+                <ZoomCue />
+                <ZoomCue variant="dot" />
+              </>
+            )}
+          </AdaptiveImage>
         </div>
       )}
 
@@ -578,14 +567,7 @@ export default function ProjectDetailPage() {
           Mode Edit — juga untuk project baru yang belum punya poin. */}
       {(descRest !== '' || featureItems.length > 0) && (
         <section className="mt-12">
-          {builderDoc !== null ? (
-            /* Page builder aktif: renderer publik = komponen yang sama
-               dengan canvas editor (Puck.Render). Elemen non-feature
-               (heading/text/image/button) ikut tampil di sini. */
-            <Suspense fallback={null}>
-              <ProjectBuilderRenderer doc={builderDoc} />
-            </Suspense>
-          ) : featureItems.length > 0 ? (
+          {featureItems.length > 0 ? (
             <FeatureItems
               items={featureItems}
               onOpenImage={(src) => openLightbox(featureImageIndex.get(src) ?? 0)}
@@ -600,9 +582,7 @@ export default function ProjectDetailPage() {
           )}
           {editMode && (
             <div className="max-w-[46rem]">
-              {/* Editor lama TETAP tersedia (fallback selama prototipe
-                  builder): poin fitur tetap bisa diedit dari sini. */}
-              {builderOpen ? null : <FeatureItemsEditor project={project} />}
+              <FeatureItemsEditor project={project} />
             </div>
           )}
         </section>
@@ -656,33 +636,6 @@ export default function ProjectDetailPage() {
       {/* Prev / next */}
       <PrevNextNav prev={prev} next={next} />
 
-      {/* ── VISUAL PAGE BUILDER (prototipe) — pintu masuk FIXED kiri-bawah
-          saat Mode Edit: selalu terlihat walau section fitur kosong,
-         tidak lagi tersembunyi di dalam section. */}
-      {editMode && builderDoc !== null && !builderOpen && (
-        <button
-          type="button"
-          onClick={() => setBuilderOpen(true)}
-          className="fixed bottom-5 left-5 z-40 inline-flex items-center gap-2 rounded-md bg-accent px-4 py-2.5 text-sm font-medium text-white shadow-lg shadow-black/30 transition-colors hover:bg-accent-hover"
-        >
-          🧩 Visual Builder
-          <span className="hidden font-mono text-[10px] font-normal uppercase tracking-[0.15em] text-white/70 sm:inline">
-            drag &amp; drop
-          </span>
-        </button>
-      )}
-
-      {/* Overlay fullscreen di atas halaman; Mode Edit lama TETAP
-          berfungsi sebagai fallback. */}
-      {builderOpen && builderDoc !== null && (
-        <Suspense fallback={null}>
-          <ProjectBuilderEditor
-            project={project}
-            doc={builderDoc}
-            onDone={() => setBuilderOpen(false)}
-          />
-        </Suspense>
-      )}
     </article>
   )
 }

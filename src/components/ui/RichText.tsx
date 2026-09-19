@@ -85,9 +85,22 @@ export default function RichText({ text, className = '' }: RichTextProps) {
             {seg.lines.join('\n')}
           </p>
         ) : (
-          <ol key={i} className="space-y-3.5">
+          <ol key={i} className="space-y-1.5">
             {seg.items.map((item, j) => (
-              <li key={j} className="flex items-start gap-3">
+              <li
+                key={j}
+                className={`flex items-start gap-3 rounded-lg px-3.5 py-3 ${
+                  /* Latar selang-seling sangat tipis: item GENAP (urutan
+                     ke-2, ke-4, …) dapat tint biru ±4% (token
+                     --color-accent-faint) — ganjil transparan. */
+                  j % 2 === 1 ? 'bg-accent-faint' : ''
+                } ${
+                  /* Garis pembatas antar item (bukan di atas item
+                     pertama) — pakai hairline-strong (lebih terang dari
+                     hairline biasa) supaya batas poin lebih tegas. */
+                  j > 0 ? 'border-t border-hairline-strong' : ''
+                }`}
+              >
                 <NumberBadge n={item.num} />
                 <span className="min-w-0 flex-1">{item.text}</span>
               </li>

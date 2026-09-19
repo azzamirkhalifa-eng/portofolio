@@ -117,14 +117,6 @@ export interface Project {
   featured: boolean
   /** Penghitung view halaman detail — internal untuk admin, tidak tampil di publik. */
   view_count: number
-  /**
-   * Dokumen visual page builder (prototipe Tahap 2, kolom jsonb
-   * `builder_json` — lihat migration-v18.sql). NULL = render publik
-   * fallback ke sistem lama (feature_items zigzag / parsing
-   * full_description). Struktur & konversi ada di types/builder.ts
-   * dan lib/builderData.ts.
-   */
-  builder_json: unknown
   /** Versi English (Fitur bahasa) — kosong = fallback tampil versi ID. */
   title_en: string
   description_en: string
