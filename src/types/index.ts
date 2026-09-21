@@ -255,6 +255,45 @@ export interface AchievementCategory {
   position: number
 }
 
+/**
+ * Struktur tabel `journey_entries` di Supabase — cerita perjalanan
+ * yang tampil sebagai timeline di halaman /perjalanan (lihat
+ * supabase/migration-v18.sql).
+ */
+export interface JourneyEntry {
+  id: number
+  /** Judul cerita. */
+  title: string
+  /** Tanggal/bulan-tahun kejadian — urutan timeline otomatis dari sini. */
+  entry_date: string
+  /** Kategori cerita (opsional; null = tanpa kategori). */
+  category_id: number | null
+  /** Cuplikan singkat 1–2 kalimat di timeline. */
+  excerpt: string
+  /** Cerita lengkap di halaman detail. */
+  full_story: string
+  /**
+   * Foto utama (TERPISAH dari galeri, pola image_url vs gallery di
+   * tabel projects): tampil BESAR di atas halaman detail + thumbnail
+   * kartu di timeline. Kosong = halaman tanpa hero (fallback data lama:
+   * foto pertama galeri).
+   */
+  hero_image: string
+  /** Array URL gambar galeri (opsional; kosong = timeline tanpa thumbnail). */
+  gallery_images: string[]
+  /** URL-friendly id untuk halaman detail (/perjalanan/:slug). */
+  slug: string | null
+  created_at: string
+  updated_at: string
+}
+
+/** Struktur tabel `journey_categories` di Supabase. */
+export interface JourneyCategory {
+  id: number
+  name: string
+  position: number
+}
+
 /** Zona tampil custom section (di antara section inti). */
 export type CustomSectionZone =
   | 'after-about'

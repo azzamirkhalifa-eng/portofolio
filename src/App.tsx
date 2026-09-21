@@ -6,6 +6,8 @@ import AchievementsPage from './pages/AchievementsPage'
 import AchievementDetailPage from './pages/AchievementDetailPage'
 import ProjectsPage from './pages/ProjectsPage'
 import ProjectDetailPage from './pages/ProjectDetailPage'
+import JourneyPage from './pages/JourneyPage'
+import JourneyDetailPage from './pages/JourneyDetailPage'
 import ProtectedRoute from './components/admin/ProtectedRoute'
 import RevealObserver from './components/RevealObserver'
 import { EditModeProvider } from './context/EditModeContext'
@@ -45,6 +47,9 @@ export default function App() {
           <Route path="/achievements/:slug" element={<AchievementDetailPage />} />
           <Route path="/projects" element={<ProjectsPage />} />
           <Route path="/projects/:slug" element={<ProjectDetailPage />} />
+          {/* Halaman Perjalanan (timeline cerita) */}
+          <Route path="/perjalanan" element={<JourneyPage />} />
+          <Route path="/perjalanan/:slug" element={<JourneyDetailPage />} />
           {/* Link lama /about & /contact tetap jalan → scroll ke section-nya */}
           <Route path="/about" element={<Navigate to="/#about" replace />} />
           <Route path="/contact" element={<Navigate to="/#contact" replace />} />

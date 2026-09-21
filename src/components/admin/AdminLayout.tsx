@@ -7,8 +7,9 @@ const tabs = [
   { id: 'skills', label: 'Skills', index: '02' },
   { id: 'projects', label: 'Projects', index: '03' },
   { id: 'achievements', label: 'Pencapaian', index: '04' },
-  { id: 'featured', label: 'Tampil di Beranda', index: '05' },
-  { id: 'messages', label: 'Pesan Masuk', index: '06' },
+  { id: 'journey', label: 'Perjalanan', index: '05' },
+  { id: 'featured', label: 'Tampil di Beranda', index: '06' },
+  { id: 'messages', label: 'Pesan Masuk', index: '07' },
 ] as const
 
 export type TabId = (typeof tabs)[number]['id']

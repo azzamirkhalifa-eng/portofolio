@@ -6,6 +6,7 @@ import type {
   ProjectButton,
   Achievement,
   FeatureItem,
+  JourneyEntry,
 } from '../types'
 import { randomSlug, slugify } from './slug'
 
@@ -379,6 +380,132 @@ export async function swapAchievements(
     .eq('id', b.id)
   if (e1) throw new Error(e1.message)
   if (e2) throw new Error(e2.message)
+}
+
+// ---------------- journey (halaman Perjalanan / timeline) ----------------
+
+/** Buat entri journey kosong baru (dipakai dashboard admin). */
+export async function addJourneyEntry(): Promise<number> {
+  const { data, error } = await supabase
+    .from('journey_entries')
+    .insert({ title: '' })
+    .select('id')
+    .single()
+  if (error) throw new Error(error.message)
+  return data.id
+}
+
+export type JourneyEntryFields = {
+  title: string
+  entry_date: string
+  category_id: number | null
+  excerpt: string
+  full_story: string
+  /** Foto utama (hero) — terpisah dari galeri. */
+  hero_image: string
+  gallery_images: string[]
+  slug?: string
+}
+
+/** Simpan (update) sebagian kolom entri journey. */
+export async function updateJourneyEntry(
+  id: number,
+  patch: Partial<Omit<JourneyEntry, 'id' | 'created_at' | 'updated_at'>>,
+): Promise<void> {
+  const { error } = await supabase
+    .from('journey_entries')
+    .update(patch)
+    .eq('id', id)
+  if (error) throw new Error(error.message)
+}
+
+/**
+ * Buat/update entri journey lengkap sekaligus (dipakai form dashboard).
+ * Slug otomatis dari judul; kalau judul kosong, pakai slug acak unik
+ * (kolom slug unique NOT NULL-ish di DB).
+ */
+export async function upsertJourneyEntry(
+  fields: JourneyEntryFields & { id?: number },
+): Promise<number> {
+  // `id` dipecah keluar dari fields supaya TIDAK ikut di payload — kolom
+  // id auto-generated tidak boleh ada di body UPDATE/INSERT PostgREST
+  // (error "column \"id\" can only be updated to DEFAULT").
+  const { id, ...rest } = fields
+  const slug =
+    rest.slug?.trim() ||
+    slugify(rest.title) ||
+    `cerita-${Date.now().toString(36)}`
+  const payload = { ...rest, slug }
+  if (id) {
+    await updateJourneyEntry(id, payload)
+    return id
+  }
+  const { data, error } = await supabase
+    .from('journey_entries')
+    .insert(payload)
+    .select('id')
+    .single()
+  if (error) throw new Error(error.message)
+  return data.id
+}
+
+export async function deleteJourneyEntry(id: number): Promise<void> {
+  const { error } = await supabase.from('journey_entries').delete().eq('id', id)
+  if (error) throw new Error(error.message)
+}
+
+/** Tambah kategori journey, kembalikan id baris baru (untuk select langsung). */
+export async function addJourneyCategory(
+  name: string,
+  position: number,
+): Promise<number> {
+  const { data, error } = await supabase
+    .from('journey_categories')
+    .insert({ name, position })
+    .select('id')
+    .single()
+  if (error) throw new Error(error.message)
+  return data.id
+}
+
+export async function renameJourneyCategory(
+  id: number,
+  name: string,
+): Promise<void> {
+  const { error } = await supabase
+    .from('journey_categories')
+    .update({ name })
+    .eq('id', id)
+  if (error) throw new Error(error.message)
+}
+
+/** Tukar posisi dua kategori journey berurutan (↑/↓). */
+export async function swapJourneyCategories(
+  a: { id: number; position: number },
+  b: { id: number; position: number },
+): Promise<void> {
+  const { error: e1 } = await supabase
+    .from('journey_categories')
+    .update({ position: b.position })
+    .eq('id', a.id)
+  const { error: e2 } = await supabase
+    .from('journey_categories')
+    .update({ position: a.position })
+    .eq('id', b.id)
+  if (e1) throw new Error(e1.message)
+  if (e2) throw new Error(e2.message)
+}
+
+/**
+ * Hapus kategori journey. Cerita yang memakainya otomatis jadi tanpa
+ * kategori (FK on delete set null) — datanya tetap ada.
+ */
+export async function deleteJourneyCategory(id: number): Promise<void> {
+  const { error } = await supabase
+    .from('journey_categories')
+    .delete()
+    .eq('id', id)
+  if (error) throw new Error(error.message)
 }
 
 // ---------------- messages (form kontak) ----------------

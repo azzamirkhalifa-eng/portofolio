@@ -6,7 +6,8 @@ const BUCKET = 'portfolio-images'
 
 /**
  * Upload gambar ke Supabase Storage lalu kembalikan URL public-nya.
- * `folder` membedakan avatar, gambar project, dan gambar sertifikat.
+ * `folder` membedakan avatar, gambar project, gambar sertifikat,
+ * dan galeri cerita perjalanan.
  *
  * Kompresi otomatis (Fitur 2): file di-downscale (sisi ≤ 1920px) dan
  * di-encode WebP kualitas 0.85 sebelum dikirim — PNG transparan tetap
@@ -18,7 +19,7 @@ const BUCKET = 'portfolio-images'
  */
 export async function uploadImage(
   file: File,
-  folder: 'avatars' | 'projects' | 'achievements',
+  folder: 'avatars' | 'projects' | 'achievements' | 'journey',
 ): Promise<string> {
   const { file: compressed } = await compressImage(file)
 

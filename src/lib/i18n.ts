@@ -12,6 +12,7 @@ export const ui: Record<string, UiEntry> = {
   // Navbar
   beranda: { id: 'Beranda', en: 'Home' },
   about: { id: 'Tentang', en: 'About' },
+  perjalanan: { id: 'Perjalanan', en: 'Journey' },
   pencapaian: { id: 'Pencapaian', en: 'Achievements' },
   projects: { id: 'Projek', en: 'Projects' },
   contact: { id: 'Kontak', en: 'Contact' },
@@ -48,6 +49,24 @@ export const ui: Record<string, UiEntry> = {
 
   // Achievements
   lihatSemuaPencapaian: { id: 'Lihat Semua Pencapaian', en: 'View All Achievements' },
+
+  // Perjalanan (timeline)
+  perjalananJudul: { id: 'Perjalanan', en: 'Journey' },
+  perjalananDesc: {
+    id: 'Garis waktu perjalanan saya — dari awal mula sampai sekarang, dibaca dari atas ke bawah.',
+    en: 'My journey timeline — from the beginning until now, read top to bottom.',
+  },
+  kembaliKePerjalanan: { id: '← Kembali ke Perjalanan', en: '← Back to Journey' },
+  ceritaTidakDitemukan: { id: 'Cerita tidak ditemukan.', en: 'Story not found.' },
+  ceritaTidakDitemukanDesc: {
+    id: 'Cerita dengan alamat itu tidak ada — mungkin sudah dihapus atau link-nya salah.',
+    en: "A story with that address doesn't exist — it may have been deleted or the link is wrong.",
+  },
+  kamuDiSini: { id: 'Kamu di sini sekarang', en: 'You are here now' },
+  dataContoh: {
+    id: 'Menampilkan data contoh — jalankan migration-v18.sql di Supabase untuk data asli.',
+    en: 'Showing sample data — run migration-v18.sql in Supabase for real data.',
+  },
 
   // Contact
   mariTerhubung: { id: 'Mari Terhubung', en: "Let's Connect" },
@@ -86,4 +105,20 @@ export function pick(
 ): string {
   if (lang === 'en' && enVal != null && enVal.trim() !== '') return enVal
   return idVal ?? ''
+}
+
+/**
+ * Label tanggal entri perjalanan: "Januari 2023" (input "2023-01")
+ * atau "15 Januari 2023" (input "2023-01-15") — sesuai bahasa aktif.
+ * Input tidak valid → dikembalikan apa adanya.
+ */
+export function formatEntryDate(value: string, lang: Lang): string {
+  const [y, m, d] = value.split('-').map(Number)
+  if (!y || !m) return value
+  const locale = lang === 'id' ? 'id-ID' : 'en-US'
+  const opts: Intl.DateTimeFormatOptions =
+    d != null
+      ? { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }
+      : { year: 'numeric', month: 'long', timeZone: 'UTC' }
+  return new Date(Date.UTC(y, m - 1, d ?? 1)).toLocaleDateString(locale, opts)
 }

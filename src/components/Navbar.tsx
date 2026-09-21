@@ -5,13 +5,24 @@ import { useActiveSection } from '../hooks/useActiveSection'
 import { useLanguage } from '../context/LanguageContext'
 import { ui } from '../lib/i18n'
 
+/**
+ * Satu item menu navbar. `href` = halaman terpisah (route dinamis,
+ * mis. /perjalanan); kalau kosong, menu scroll ke `section` di beranda.
+ */
+type MenuLink = {
+  key: 'beranda' | 'about' | 'perjalanan' | 'pencapaian' | 'projects' | 'contact'
+  section?: string
+  href?: string
+}
+
 /** Label menu mengikuti bahasa aktif (diterjemahkan saat render). */
-const menuLinks = [
-  { key: 'beranda' as const, section: 'top' },
-  { key: 'about' as const, section: 'about' },
-  { key: 'pencapaian' as const, section: 'achievements' },
-  { key: 'projects' as const, section: 'projects' },
-  { key: 'contact' as const, section: 'contact' },
+const menuLinks: MenuLink[] = [
+  { key: 'beranda', section: 'top' },
+  { key: 'about', section: 'about' },
+  { key: 'perjalanan', href: '/perjalanan' },
+  { key: 'pencapaian', section: 'achievements' },
+  { key: 'projects', section: 'projects' },
+  { key: 'contact', section: 'contact' },
 ]
 
 type NavbarProps = {
@@ -54,9 +65,10 @@ export default function Navbar({ name }: NavbarProps) {
     setMobileOpen(false)
   }, [pathname, hash])
 
-  // Halaman utama → scroll-spy; area project/pencapaian → tandai menu-nya.
+  // Halaman utama → scroll-spy; area project/pencapaian/perjalanan → tandai menu-nya.
   const onProjectsArea = pathname.startsWith('/projects')
   const onAchievementsArea = pathname.startsWith('/achievements')
+  const onJourneyArea = pathname.startsWith('/perjalanan')
   const active =
     pathname === '/'
       ? activeSection
@@ -64,7 +76,9 @@ export default function Navbar({ name }: NavbarProps) {
         ? 'projects'
         : onAchievementsArea
           ? 'achievements'
-          : null
+          : onJourneyArea
+            ? 'perjalanan'
+            : null
 
   /**
    * Klik menu saat hash TUJUAN sama dengan hash sekarang (mis. sudah di
@@ -117,23 +131,36 @@ export default function Navbar({ name }: NavbarProps) {
         <div className="hidden items-center gap-5 sm:flex sm:gap-7">
         <ul className="hidden items-center gap-5 sm:flex sm:gap-7">
           {menuLinks.map((link) => {
-            const isActive = active === link.section
+            const isActive = active === link.key
+            const common = `cursor-target ${linkCls(isActive)}`
             return (
-              <li key={link.section}>
-                <Link
-                  to={`/#${link.section}`}
-                  data-edit-nav
-                  onClick={(e) => handleMenuClick(e, link.section)}
-                  className={`cursor-target ${linkCls(isActive)}`}
-                >
-              {ui[link.key][lang]}
-              {isActive && (
-                    <span
-                      aria-hidden
-                      className="absolute -bottom-1.5 left-0 h-px w-full bg-accent"
-                    />
-                  )}
-                </Link>
+              <li key={link.key}>
+                {link.href ? (
+                  <Link to={link.href} data-edit-nav className={common}>
+                    {ui[link.key][lang]}
+                    {isActive && (
+                      <span
+                        aria-hidden
+                        className="absolute -bottom-1.5 left-0 h-px w-full bg-accent"
+                      />
+                    )}
+                  </Link>
+                ) : (
+                  <Link
+                    to={`/#${link.section}`}
+                    data-edit-nav
+                    onClick={(e) => handleMenuClick(e, link.section ?? 'top')}
+                    className={common}
+                  >
+                    {ui[link.key][lang]}
+                    {isActive && (
+                      <span
+                        aria-hidden
+                        className="absolute -bottom-1.5 left-0 h-px w-full bg-accent"
+                      />
+                    )}
+                  </Link>
+                )}
               </li>
             )
           })}
@@ -181,17 +208,27 @@ export default function Navbar({ name }: NavbarProps) {
         {mobileOpen && (
           <ul className="border-t border-hairline px-4 pb-4 pt-2 sm:hidden">
             {menuLinks.map((link) => {
-            const isActive = active === link.section
+            const isActive = active === link.key
             return (
-              <li key={link.section}>
-                <Link
-                  to={`/#${link.section}`}
-                  data-edit-nav
-                  onClick={(e) => handleMenuClick(e, link.section)}
-                  className={`block rounded-md px-2 py-3 text-base ${linkCls(isActive)}`}
-                >
-                  {ui[link.key][lang]}
-                </Link>
+              <li key={link.key}>
+                {link.href ? (
+                  <Link
+                    to={link.href}
+                    data-edit-nav
+                    className={`block rounded-md px-2 py-3 text-base ${linkCls(isActive)}`}
+                  >
+                    {ui[link.key][lang]}
+                  </Link>
+                ) : (
+                  <Link
+                    to={`/#${link.section}`}
+                    data-edit-nav
+                    onClick={(e) => handleMenuClick(e, link.section ?? 'top')}
+                    className={`block rounded-md px-2 py-3 text-base ${linkCls(isActive)}`}
+                  >
+                    {ui[link.key][lang]}
+                  </Link>
+                )}
               </li>
             )
           })}

@@ -25,7 +25,7 @@ const editorInputCls =
 type GalleryEditorProps = {
   images: string[]
   onChange: (next: string[]) => void | Promise<void>
-  folder: 'avatars' | 'projects' | 'achievements'
+  folder: 'avatars' | 'projects' | 'achievements' | 'journey'
   /**
    * Konteks bingkai (Fitur 1). Diisi → pilih 1 foto membuka modal crop
    * ala Canva dulu (pilih bingkai → drag/zoom); pilih banyak foto tetap
