@@ -60,6 +60,8 @@ export interface Skill {
 export interface Category {
   id: number
   name: string
+  /** Versi English nama kategori — kosong = fallback tampil versi ID. */
+  name_en: string
   position: number
 }
 
@@ -252,6 +254,8 @@ export interface Achievement {
 export interface AchievementCategory {
   id: number
   name: string
+  /** Versi English nama kategori — kosong = fallback tampil versi ID. */
+  name_en: string
   position: number
 }
 
@@ -272,6 +276,10 @@ export interface JourneyEntry {
   excerpt: string
   /** Cerita lengkap di halaman detail. */
   full_story: string
+  /** Versi English (Fitur bahasa) — kosong = fallback tampil versi ID. */
+  title_en: string
+  excerpt_en: string
+  full_story_en: string
   /**
    * Foto utama (TERPISAH dari galeri, pola image_url vs gallery di
    * tabel projects): tampil BESAR di atas halaman detail + thumbnail
@@ -291,6 +299,8 @@ export interface JourneyEntry {
 export interface JourneyCategory {
   id: number
   name: string
+  /** Versi English nama kategori — kosong = fallback tampil versi ID. */
+  name_en: string
   position: number
 }
 

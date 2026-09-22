@@ -11,7 +11,7 @@ import { updateJourneyEntry } from '../lib/mutations'
 import { useJourneyEntries, useJourneyCategories } from '../hooks/useJourneyEntries'
 import { useEditMode } from '../context/EditModeContext'
 import { useLanguage } from '../context/LanguageContext'
-import { formatEntryDate, t, ui } from '../lib/i18n'
+import { formatEntryDate, pick, t, ui } from '../lib/i18n'
 import type { Slide } from 'yet-another-react-lightbox'
 
 function DetailSkeleton() {
@@ -80,7 +80,11 @@ export default function JourneyDetailPage() {
 
   const categoryName =
     entry && entry.category_id !== null
-      ? categories.find((c) => c.id === entry.category_id)?.name
+      ? pick(
+          categories.find((c) => c.id === entry.category_id)?.name,
+          categories.find((c) => c.id === entry.category_id)?.name_en,
+          lang,
+        )
       : undefined
 
   // ── Gambar & lightbox — hooks SEMUA di atas early return (Rules of Hooks).
@@ -93,19 +97,20 @@ export default function JourneyDetailPage() {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
   const closeLightbox = useCallback(() => setLightboxIndex(null), [])
 
+  /** Judul sesuai bahasa aktif — dipakai alt/aria di semua tempat. */
+  const title = pick(entry?.title, entry?.title_en, lang) || 'Cerita'
+
   // Slide lightbox = [foto utama (jika ada), ...galeri]. Referensi
   // stabil (useMemo) sesuai ketentuan prop `slides` YARL.
   const lightboxSlides = useMemo<Slide[]>(
     () => [
-      ...(heroImage
-        ? [{ src: heroImage, alt: `${entry?.title ?? 'Cerita'} — foto utama` }]
-        : []),
+      ...(heroImage ? [{ src: heroImage, alt: `${title} — foto utama` }] : []),
       ...images.map((src, i) => ({
         src,
-        alt: `${entry?.title ?? 'Cerita'} — gambar ${i + 1}`,
+        alt: `${title} — gambar ${i + 1}`,
       })),
     ],
-    [heroImage, images, entry?.title],
+    [heroImage, images, title],
   )
 
   const openLightbox = useCallback(
@@ -151,7 +156,7 @@ export default function JourneyDetailPage() {
         <div className={editMode ? '' : 'zoom-hover'}>
           <AdaptiveImage
             src={heroImage}
-            alt={`Gambar utama ${entry.title}`}
+            alt={`Gambar utama ${title}`}
             sizes="100vw"
             fallbackRatio={3 / 4}
             maxHeight="70vh"
@@ -188,9 +193,9 @@ export default function JourneyDetailPage() {
         </p>
         <h1
           className="mt-3 text-4xl font-extrabold tracking-tight sm:text-5xl"
-          aria-label={`${entry.title}. ${formatEntryDate(entry.entry_date, lang)}`}
+          aria-label={`${pick(entry.title, entry.title_en, lang)}. ${formatEntryDate(entry.entry_date, lang)}`}
         >
-          {entry.title || 'Tanpa judul'}
+          {pick(entry.title, entry.title_en, lang) || 'Tanpa judul'}
         </h1>
         <p className="mt-4 font-mono text-sm text-muted">
           {formatEntryDate(entry.entry_date, lang)}
@@ -201,10 +206,10 @@ export default function JourneyDetailPage() {
           tetap mengikuti lebar layar di mobile), line-height lega,
           jarak jelas antar paragraf. Paragraf teks mengalir biasa —
           TANPA list bernomor/badge seperti di detail project. */}
-      {entry.full_story && (
+      {pick(entry.full_story, entry.full_story_en, lang) && (
         <div className="mt-10 max-w-[44rem]">
           <StoryParagraphs
-            text={entry.full_story}
+            text={pick(entry.full_story, entry.full_story_en, lang)}
             className="leading-[1.9] text-muted"
           />
         </div>
@@ -284,7 +289,7 @@ export default function JourneyDetailPage() {
                 >
                   <SmoothImage
                     src={src}
-                    alt={`${entry.title} — gambar ${i + 1}`}
+                    alt={`${title} — gambar ${i + 1}`}
                     sizes="(min-width:1024px) 25vw, (min-width:640px) 50vw, 100vw"
                     className="block h-auto w-full rounded-[calc(0.5rem-1px)]"
                   />
@@ -310,7 +315,7 @@ export default function JourneyDetailPage() {
                 {t(ui.sebelumnya, lang)}
               </span>
               <span className="mt-1 block truncate text-sm font-medium text-foreground transition-colors group-hover:text-accent">
-                {prev.title}
+                {pick(prev.title, prev.title_en, lang)}
               </span>
             </Link>
           ) : (
@@ -326,7 +331,7 @@ export default function JourneyDetailPage() {
                 {t(ui.berikutnya, lang)}
               </span>
               <span className="mt-1 block truncate text-sm font-medium text-foreground transition-colors group-hover:text-accent">
-                {next.title}
+                {pick(next.title, next.title_en, lang)}
               </span>
             </Link>
           ) : (

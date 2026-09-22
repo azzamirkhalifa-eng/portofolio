@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import InlineText from './InlineText'
+import InlineTextBilingual from './InlineTextBilingual'
 import { MiniBtn } from './controls'
 import {
   addJourneyCategory,
@@ -28,6 +28,7 @@ export default function JourneyCategoryManager({
   onFeedback?: (fb: { status: 'success' | 'error'; message: string }) => void
 }) {
   const [newName, setNewName] = useState('')
+  const [newNameEn, setNewNameEn] = useState('')
   const [busy, setBusy] = useState(false)
 
   async function run(
@@ -54,11 +55,13 @@ export default function JourneyCategoryManager({
     if (!name) return
     const last = categories[categories.length - 1]
     await run(
-      () => addJourneyCategory(name, (last?.position ?? 0) + 1),
+      () =>
+        addJourneyCategory(name, newNameEn.trim(), (last?.position ?? 0) + 1),
       'Gagal menambah kategori',
       `Kategori "${name}" ditambahkan.`,
     )
     setNewName('')
+    setNewNameEn('')
   }
 
   async function handleMove(cat: JourneyCategory, dir: -1 | 1) {
@@ -101,22 +104,34 @@ export default function JourneyCategoryManager({
               ↓
             </MiniBtn>
           </div>
-          <InlineText
-            className="min-w-0 flex-1 font-mono text-sm"
-            value={cat.name}
-            placeholder="Nama kategori…"
-            ariaLabel="Edit nama kategori perjalanan"
-            onSave={async (v) => {
-              const name = v.trim()
-              if (name && name !== cat.name) {
+          <div className="min-w-0 flex-1">
+            <InlineTextBilingual
+              className="font-mono text-sm"
+              valueId={cat.name}
+              valueEn={cat.name_en ?? ''}
+              enabled
+              placeholder="Nama kategori (ID)…"
+              placeholderEn="Category name (EN) — optional…"
+              ariaLabel="Edit nama kategori perjalanan"
+              onSaveId={async (v) => {
+                const name = v.trim()
+                if (name && name !== cat.name) {
+                  await run(
+                    () => renameJourneyCategory(cat.id, name, cat.name_en ?? ''),
+                    'Gagal mengubah nama kategori',
+                    'Nama kategori disimpan.',
+                  )
+                }
+              }}
+              onSaveEn={async (v) => {
                 await run(
-                  () => renameJourneyCategory(cat.id, name),
+                  () => renameJourneyCategory(cat.id, cat.name, v.trim()),
                   'Gagal mengubah nama kategori',
-                  'Nama kategori disimpan.',
+                  'Nama kategori (EN) disimpan.',
                 )
-              }
-            }}
-          />
+              }}
+            />
+          </div>
           <MiniBtn
             title="Hapus kategori"
             tone="danger"
@@ -145,13 +160,19 @@ export default function JourneyCategoryManager({
           e.preventDefault()
           void handleAdd()
         }}
-        className="flex items-center gap-2 pt-1"
+        className="flex flex-col gap-2 pt-1 sm:flex-row sm:items-center"
       >
         <input
           className="w-full flex-1 rounded-md border border-hairline bg-surface-3 px-2.5 py-1.5 text-sm text-foreground outline-none placeholder:text-white/45 focus:border-accent/60 focus:ring-1 focus:ring-accent/30"
           value={newName}
           onChange={(e) => setNewName(e.target.value)}
-          placeholder="Kategori baru (misal: Pendidikan, Pengalaman)"
+          placeholder="Kategori baru (ID) — misal: Pendidikan"
+        />
+        <input
+          className="w-full flex-1 rounded-md border border-hairline bg-surface-3 px-2.5 py-1.5 text-sm text-foreground outline-none placeholder:text-white/45 focus:border-accent/60 focus:ring-1 focus:ring-accent/30"
+          value={newNameEn}
+          onChange={(e) => setNewNameEn(e.target.value)}
+          placeholder="Category name (EN) — optional, misal: Education"
         />
         <button
           type="submit"

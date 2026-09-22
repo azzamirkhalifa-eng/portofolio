@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react'
-import InlineText from './InlineText'
+import InlineTextBilingual from './InlineTextBilingual'
 import { GhostBtn, MiniBtn, selectCls } from './controls'
 import { useEditMode } from '../../context/EditModeContext'
 import {
@@ -23,6 +23,7 @@ export default function CategoryManager({
 }: CategoryManagerProps) {
   const { toast } = useEditMode()
   const [newName, setNewName] = useState('')
+  const [newNameEn, setNewNameEn] = useState('')
   const [busy, setBusy] = useState(false)
   /** Kategori yang sedang dalam alur hapus (karena masih dipakai project). */
   const [deleteFlow, setDeleteFlow] = useState<Category | null>(null)
@@ -73,10 +74,11 @@ export default function CategoryManager({
     if (!name) return
     const last = categories[categories.length - 1]
     await run(
-      () => addCategory(name, (last?.position ?? 0) + 1),
+      () => addCategory(name, newNameEn.trim(), (last?.position ?? 0) + 1),
       'Gagal menambah kategori',
     )
     setNewName('')
+    setNewNameEn('')
   }
 
   const others = categories.filter((c) => c.id !== deleteFlow?.id)
@@ -125,18 +127,26 @@ export default function CategoryManager({
                 ↓
               </MiniBtn>
             </div>
-            <InlineText
-              className="min-w-0 flex-1 font-mono text-sm"
-              value={cat.name}
-              placeholder="Nama kategori…"
-              ariaLabel="Edit nama kategori"
-              onSave={async (v) => {
-                const name = v.trim()
-                if (name && name !== cat.name) {
-                  await renameCategory(cat.id, name)
-                }
-              }}
-            />
+            <div className="min-w-0 flex-1">
+              <InlineTextBilingual
+                className="font-mono text-sm"
+                valueId={cat.name}
+                valueEn={cat.name_en ?? ''}
+                enabled
+                placeholder="Nama kategori (ID)…"
+                placeholderEn="Category name (EN) — optional…"
+                ariaLabel="Edit nama kategori"
+                onSaveId={async (v) => {
+                  const name = v.trim()
+                  if (name && name !== cat.name) {
+                    await renameCategory(cat.id, name, cat.name_en ?? '')
+                  }
+                }}
+                onSaveEn={async (v) => {
+                  await renameCategory(cat.id, cat.name, v.trim())
+                }}
+              />
+            </div>
             <span className="font-mono text-[10px] text-white/25">
               {usedCounts[cat.id] ?? 0} project
             </span>
@@ -197,12 +207,21 @@ export default function CategoryManager({
       ))}
 
       {/* Tambah kategori */}
-      <form onSubmit={handleAdd} className="flex items-center gap-2 pt-1">
+      <form
+        onSubmit={handleAdd}
+        className="flex flex-col gap-2 pt-1 sm:flex-row sm:items-center"
+      >
         <input
           className="w-full flex-1 rounded-md border border-hairline bg-surface-3 px-2.5 py-1.5 text-sm text-foreground outline-none placeholder:text-white/45 focus:border-accent/60 focus:ring-1 focus:ring-accent/30"
           value={newName}
           onChange={(e) => setNewName(e.target.value)}
-          placeholder="Kategori baru (misal: Web Design)"
+          placeholder="Kategori baru (ID) — misal: Web Design"
+        />
+        <input
+          className="w-full flex-1 rounded-md border border-hairline bg-surface-3 px-2.5 py-1.5 text-sm text-foreground outline-none placeholder:text-white/45 focus:border-accent/60 focus:ring-1 focus:ring-accent/30"
+          value={newNameEn}
+          onChange={(e) => setNewNameEn(e.target.value)}
+          placeholder="Category name (EN) — optional, misal: Web Design"
         />
         <button
           type="submit"

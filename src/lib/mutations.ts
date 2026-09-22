@@ -153,15 +153,26 @@ export async function swapProjects(
 
 // ---------------- categories ----------------
 
-export async function addCategory(name: string, position: number): Promise<void> {
-  const { error } = await supabase.from('categories').insert({ name, position })
+export async function addCategory(
+  name: string,
+  nameEn: string,
+  position: number,
+): Promise<void> {
+  const { error } = await supabase
+    .from('categories')
+    .insert({ name, name_en: nameEn, position })
   if (error) throw new Error(error.message)
 }
 
-export async function renameCategory(id: number, name: string): Promise<void> {
+/** Simpan nama kategori (ID + EN). EN kosong = fallback tampil versi ID. */
+export async function renameCategory(
+  id: number,
+  name: string,
+  nameEn: string,
+): Promise<void> {
   const { error } = await supabase
     .from('categories')
-    .update({ name })
+    .update({ name, name_en: nameEn })
     .eq('id', id)
   if (error) throw new Error(error.message)
 }
@@ -323,11 +334,12 @@ export async function deleteAchievement(id: number): Promise<void> {
 
 export async function addAchievementCategory(
   name: string,
+  nameEn: string,
   position: number,
 ): Promise<void> {
   const { error } = await supabase
     .from('achievement_categories')
-    .insert({ name, position })
+    .insert({ name, name_en: nameEn, position })
   if (error) throw new Error(error.message)
 }
 
@@ -345,10 +357,11 @@ export async function updateAchievementCategory(
 export async function renameAchievementCategory(
   id: number,
   name: string,
+  nameEn: string,
 ): Promise<void> {
   const { error } = await supabase
     .from('achievement_categories')
-    .update({ name })
+    .update({ name, name_en: nameEn })
     .eq('id', id)
   if (error) throw new Error(error.message)
 }
@@ -388,7 +401,7 @@ export async function swapAchievements(
 export async function addJourneyEntry(): Promise<number> {
   const { data, error } = await supabase
     .from('journey_entries')
-    .insert({ title: '' })
+    .insert({ title: '', title_en: '', excerpt_en: '', full_story_en: '' })
     .select('id')
     .single()
   if (error) throw new Error(error.message)
@@ -397,10 +410,14 @@ export async function addJourneyEntry(): Promise<number> {
 
 export type JourneyEntryFields = {
   title: string
+  /** Versi English (Fitur bahasa) — kosong = fallback tampil versi ID. */
+  title_en: string
   entry_date: string
   category_id: number | null
   excerpt: string
+  excerpt_en: string
   full_story: string
+  full_story_en: string
   /** Foto utama (hero) — terpisah dari galeri. */
   hero_image: string
   gallery_images: string[]
@@ -457,24 +474,27 @@ export async function deleteJourneyEntry(id: number): Promise<void> {
 /** Tambah kategori journey, kembalikan id baris baru (untuk select langsung). */
 export async function addJourneyCategory(
   name: string,
+  nameEn: string,
   position: number,
 ): Promise<number> {
   const { data, error } = await supabase
     .from('journey_categories')
-    .insert({ name, position })
+    .insert({ name, name_en: nameEn, position })
     .select('id')
     .single()
   if (error) throw new Error(error.message)
   return data.id
 }
 
+/** Simpan nama kategori (ID + EN). EN kosong = fallback tampil versi ID. */
 export async function renameJourneyCategory(
   id: number,
   name: string,
+  nameEn: string,
 ): Promise<void> {
   const { error } = await supabase
     .from('journey_categories')
-    .update({ name })
+    .update({ name, name_en: nameEn })
     .eq('id', id)
   if (error) throw new Error(error.message)
 }

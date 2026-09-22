@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import SmoothImage from './ui/SmoothImage'
 import { useEditMode } from '../context/EditModeContext'
 import { useLanguage } from '../context/LanguageContext'
-import { formatEntryDate, t, ui } from '../lib/i18n'
+import { formatEntryDate, pick, t, ui } from '../lib/i18n'
 import type { JourneyCategory, JourneyEntry } from '../types'
 
 /** Titik bulat di garis timeline — berdenyut halus pada entry TERBARU. */
@@ -70,16 +70,18 @@ function TimelineItem({
         )}
       </p>
       <h3 className="mt-1.5 text-lg font-semibold tracking-tight text-foreground transition-colors group-hover:text-accent">
-        {entry.title || 'Tanpa judul'}
+        {pick(entry.title, entry.title_en, lang) || 'Tanpa judul'}
       </h3>
-      {entry.excerpt && (
-        <p className="mt-2 text-sm leading-relaxed text-muted">{entry.excerpt}</p>
+      {pick(entry.excerpt, entry.excerpt_en, lang) && (
+        <p className="mt-2 text-sm leading-relaxed text-muted">
+          {pick(entry.excerpt, entry.excerpt_en, lang)}
+        </p>
       )}
       {thumbnail && (
         <div className="zoom-hover mt-4 overflow-hidden rounded-lg border border-hairline">
           <SmoothImage
             src={thumbnail}
-            alt={entry.title || 'Galeri cerita'}
+            alt={pick(entry.title, entry.title_en, lang) || 'Galeri cerita'}
             sizes="(min-width:1024px) 40vw, (min-width:640px) 60vw, 85vw"
             className="block h-auto w-full"
           />
@@ -200,7 +202,7 @@ export default function JourneyTimeline({
                     : 'border-hairline text-muted hover:border-white/25 hover:text-foreground'
                 }`}
               >
-                {cat.name}
+                {pick(cat.name, cat.name_en, lang)}
               </button>
             )
           })}
@@ -237,7 +239,11 @@ export default function JourneyTimeline({
                 entry={entry}
                 side={i % 2 === 0 ? 'left' : 'right'}
                 categoryName={
-                  categories.find((c) => c.id === entry.category_id)?.name
+                  pick(
+                    categories.find((c) => c.id === entry.category_id)?.name,
+                    categories.find((c) => c.id === entry.category_id)?.name_en,
+                    lang,
+                  )
                 }
                 isLatest={i === filtered.length - 1}
               />

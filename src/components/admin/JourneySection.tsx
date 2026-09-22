@@ -19,10 +19,14 @@ type FeedbackState = { status: 'success' | 'error'; message: string } | null
 /** State form cerita perjalanan (semua field yang bisa diedit admin). */
 type JourneyFormState = {
   title: string
+  /** Versi English (Fitur bahasa) — kosong = fallback tampil versi ID. */
+  title_en: string
   entry_date: string
   category_id: number | null
   excerpt: string
+  excerpt_en: string
   full_story: string
+  full_story_en: string
   /** Foto utama — hero besar di atas detail + thumbnail timeline. */
   hero_image: string
   gallery_images: string[]
@@ -32,10 +36,13 @@ type JourneyFormState = {
 function toFormState(entry: JourneyEntry | null): JourneyFormState {
   return {
     title: entry?.title ?? '',
+    title_en: entry?.title_en ?? '',
     entry_date: (entry?.entry_date ?? '').slice(0, 10),
     category_id: entry?.category_id ?? null,
     excerpt: entry?.excerpt ?? '',
+    excerpt_en: entry?.excerpt_en ?? '',
     full_story: entry?.full_story ?? '',
+    full_story_en: entry?.full_story_en ?? '',
     hero_image: entry?.hero_image ?? '',
     gallery_images: entry?.gallery_images ?? [],
     slug: entry?.slug ?? '',
@@ -74,6 +81,7 @@ function JourneyForm({
   )
   const [showNewCat, setShowNewCat] = useState(false)
   const [newCatName, setNewCatName] = useState('')
+  const [newCatNameEn, setNewCatNameEn] = useState('')
   const [addingCat, setAddingCat] = useState(false)
   const [heroUploading, setHeroUploading] = useState(false)
 
@@ -113,11 +121,16 @@ function JourneyForm({
     setAddingCat(true)
     try {
       const last = categories[categories.length - 1]
-      const id = await addJourneyCategory(name, (last?.position ?? 0) + 1)
+      const id = await addJourneyCategory(
+        name,
+        newCatNameEn.trim(),
+        (last?.position ?? 0) + 1,
+      )
       onCategoryAdded(id)
       set('category_id', id)
       setShowNewCat(false)
       setNewCatName('')
+      setNewCatNameEn('')
       onFeedback({ status: 'success', message: `Kategori "${name}" ditambahkan.` })
     } catch (err) {
       onFeedback({
@@ -216,8 +229,14 @@ function JourneyForm({
                   className={inputCls}
                   value={newCatName}
                   onChange={(e) => setNewCatName(e.target.value)}
-                  placeholder="Nama kategori baru…"
+                  placeholder="Kategori baru (ID)…"
                   autoFocus
+                />
+                <input
+                  className={inputCls}
+                  value={newCatNameEn}
+                  onChange={(e) => setNewCatNameEn(e.target.value)}
+                  placeholder="Category name (EN), opsional…"
                 />
                 <button
                   type="button"
@@ -233,32 +252,56 @@ function JourneyForm({
         </Field>
       </div>
 
-      <Field label="Judul cerita">
-        <input
-          className={`${inputCls} border-accent/30`}
-          value={state.title}
-          onChange={(e) => set('title', e.target.value)}
-          placeholder="misal: Memulai Perjalanan di Dunia Kode"
-          required
-        />
+      <Field label="Judul cerita — ID / EN">
+        <div className="grid gap-2">
+          <input
+            className={`${inputCls} border-accent/30`}
+            value={state.title}
+            onChange={(e) => set('title', e.target.value)}
+            placeholder="ID — misal: Memulai Perjalanan di Dunia Kode"
+            required
+          />
+          <input
+            className={inputCls}
+            value={state.title_en}
+            onChange={(e) => set('title_en', e.target.value)}
+            placeholder="EN — kosong = pakai versi Indonesia"
+          />
+        </div>
       </Field>
 
-      <Field label="Cuplikan singkat (tampil di timeline, 1–2 kalimat)">
-        <textarea
-          className={`${inputCls} min-h-16 resize-y`}
-          value={state.excerpt}
-          onChange={(e) => set('excerpt', e.target.value)}
-          placeholder="Ringkasan singkat cerita ini…"
-        />
+      <Field label="Cuplikan singkat (tampil di timeline, 1–2 kalimat) — ID / EN">
+        <div className="grid gap-2">
+          <textarea
+            className={`${inputCls} min-h-16 resize-y border-accent/30`}
+            value={state.excerpt}
+            onChange={(e) => set('excerpt', e.target.value)}
+            placeholder="ID — ringkasan singkat cerita ini…"
+          />
+          <textarea
+            className={`${inputCls} min-h-16 resize-y`}
+            value={state.excerpt_en}
+            onChange={(e) => set('excerpt_en', e.target.value)}
+            placeholder="EN — kosong = pakai versi Indonesia"
+          />
+        </div>
       </Field>
 
-      <Field label="Cerita lengkap (halaman detail — boleh panjang)">
-        <textarea
-          className={`${inputCls} min-h-32 resize-y`}
-          value={state.full_story}
-          onChange={(e) => set('full_story', e.target.value)}
-          placeholder="Cerita penuh: latar, proses, tantangan, hasil…"
-        />
+      <Field label="Cerita lengkap (halaman detail — boleh panjang) — ID / EN">
+        <div className="grid gap-2">
+          <textarea
+            className={`${inputCls} min-h-32 resize-y border-accent/30`}
+            value={state.full_story}
+            onChange={(e) => set('full_story', e.target.value)}
+            placeholder="ID — cerita penuh: latar, proses, tantangan, hasil…"
+          />
+          <textarea
+            className={`${inputCls} min-h-32 resize-y`}
+            value={state.full_story_en}
+            onChange={(e) => set('full_story_en', e.target.value)}
+            placeholder="EN — kosong = pakai versi Indonesia"
+          />
+        </div>
       </Field>
 
       {/* ── Foto UTAMA (hero) — terpisah dari galeri, pola "Gambar
@@ -385,10 +428,13 @@ export default function JourneySection() {
       await upsertJourneyEntry({
         id: targetId === 'new' ? undefined : targetId,
         title: fields.title,
+        title_en: fields.title_en.trim(),
         entry_date: fields.entry_date,
         category_id: fields.category_id,
         excerpt: fields.excerpt,
+        excerpt_en: fields.excerpt_en.trim(),
         full_story: fields.full_story,
+        full_story_en: fields.full_story_en.trim(),
         hero_image: fields.hero_image.trim(),
         gallery_images: fields.gallery_images,
         slug: fields.slug || undefined,

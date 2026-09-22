@@ -7,7 +7,7 @@ import CategoryManager from './edit/CategoryManager'
 import { GhostBtn, selectCls } from './edit/controls'
 import { useEditMode } from '../context/EditModeContext'
 import { useLanguage } from '../context/LanguageContext'
-import { t, ui } from '../lib/i18n'
+import { pick, t, ui } from '../lib/i18n'
 import {
   addProject,
   deleteProject,
@@ -211,7 +211,7 @@ export default function Projects({
                       : 'border-hairline text-muted hover:border-white/25 hover:text-foreground'
                   }`}
                 >
-                  {cat.name}
+                  {pick(cat.name, cat.name_en, lang)}
                 </button>
               )
             })}

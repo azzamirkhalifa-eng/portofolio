@@ -166,11 +166,16 @@ export default function AchievementDetailPage() {
       ? achievements[index + 1]
       : null
 
+  const { lang } = useLanguage()
+
   const categoryName =
     item && item.category_id !== null
-      ? categories.find((c) => c.id === item.category_id)?.name
+      ? pick(
+          categories.find((c) => c.id === item.category_id)?.name,
+          categories.find((c) => c.id === item.category_id)?.name_en,
+          lang,
+        )
       : undefined
-  const { lang } = useLanguage()
 
   if (loading) {
     return <DetailSkeleton />

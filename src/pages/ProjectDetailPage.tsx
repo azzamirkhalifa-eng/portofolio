@@ -332,7 +332,11 @@ export default function ProjectDetailPage() {
 
   const categoryName =
     project && project.category_id !== null
-      ? categories.find((c) => c.id === project.category_id)?.name
+      ? pick(
+          categories.find((c) => c.id === project.category_id)?.name,
+          categories.find((c) => c.id === project.category_id)?.name_en,
+          lang,
+        )
       : undefined
 
   // ── Data gambar & hooks lightbox — SEMUA dipanggil di atas early return

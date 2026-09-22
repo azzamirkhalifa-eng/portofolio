@@ -72,7 +72,11 @@ function AchievementCard({
     }
   }
 
-  const catName = categories.find((c) => c.id === item.category_id)?.name
+  const catName = pick(
+    categories.find((c) => c.id === item.category_id)?.name,
+    categories.find((c) => c.id === item.category_id)?.name_en,
+    lang,
+  )
   const meta = [catName, pick(item.issuer, item.issuer_en, lang), item.year]
     .filter(Boolean)
     .join(' · ')
@@ -405,7 +409,7 @@ export default function Achievements({
                     : 'border-hairline text-muted hover:border-white/25 hover:text-foreground'
                 }`}
               >
-                {cat.name}
+                {pick(cat.name, cat.name_en, lang)}
               </button>
             )
           })}

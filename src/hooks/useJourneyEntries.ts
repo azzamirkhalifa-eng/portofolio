@@ -14,11 +14,15 @@ const DUMMY_ENTRIES: JourneyEntry[] = [
   {
     id: -1,
     title: 'Memulai Perjalanan di Dunia Kode',
+    title_en: 'Starting My Journey in Code',
     entry_date: '2023-01-15',
     category_id: -1,
     excerpt:
       'Awal mula segalanya — baris kode pertama yang saya tulis dan alasan saya jatuh cinta pada programming.',
+    excerpt_en:
+      'Where it all began — my first lines of code and why I fell in love with programming.',
     full_story: '',
+    full_story_en: '',
     hero_image: '',
     gallery_images: [],
     slug: 'memulai-perjalanan-di-dunia-kode',
@@ -28,11 +32,15 @@ const DUMMY_ENTRIES: JourneyEntry[] = [
   {
     id: -2,
     title: 'Menyelesaikan Project Pertama',
+    title_en: 'Finishing My First Project',
     entry_date: '2024-06-20',
     category_id: -3,
     excerpt:
       'Project pertama yang benar-benar rilis — lengkap dengan drama deadline dan rasa lega.',
+    excerpt_en:
+      'The first project that actually shipped — complete with deadline drama and relief.',
     full_story: '',
+    full_story_en: '',
     hero_image: '',
     gallery_images: [],
     slug: 'menyelesaikan-project-pertama',
@@ -42,11 +50,15 @@ const DUMMY_ENTRIES: JourneyEntry[] = [
   {
     id: -3,
     title: 'Bergabung dengan Tim Developer',
+    title_en: 'Joining a Developer Team',
     entry_date: '2025-09-01',
     category_id: -2,
     excerpt:
       'Dari coding sendirian ke bekerja dalam tim — babak baru yang penuh pembelajaran.',
+    excerpt_en:
+      'From coding solo to working in a team — a new chapter full of lessons.',
     full_story: '',
+    full_story_en: '',
     hero_image: '',
     gallery_images: [],
     slug: 'bergabung-dengan-tim-developer',
@@ -57,9 +69,9 @@ const DUMMY_ENTRIES: JourneyEntry[] = [
 
 /** Kategori dummy — pasangan id kategori yang dirujuk dummy entries. */
 const DUMMY_CATEGORIES: JourneyCategory[] = [
-  { id: -1, name: 'Pendidikan', position: 1 },
-  { id: -2, name: 'Pengalaman', position: 2 },
-  { id: -3, name: 'Project', position: 3 },
+  { id: -1, name: 'Pendidikan', name_en: 'Education', position: 1 },
+  { id: -2, name: 'Pengalaman', name_en: 'Experience', position: 2 },
+  { id: -3, name: 'Project', name_en: 'Project', position: 3 },
 ]
 
 /** Tabel journey sudah tersedia di DB (query tanpa error & tabel ada)? */

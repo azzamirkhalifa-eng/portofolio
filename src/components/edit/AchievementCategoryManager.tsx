@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import InlineText from './InlineText'
+import InlineTextBilingual from './InlineTextBilingual'
 import { MiniBtn } from './controls'
 import { useEditMode } from '../../context/EditModeContext'
 import {
@@ -27,6 +27,7 @@ export default function AchievementCategoryManager({
 }) {
   const { toast } = useEditMode()
   const [newName, setNewName] = useState('')
+  const [newNameEn, setNewNameEn] = useState('')
   const [busy, setBusy] = useState(false)
 
   async function run(action: () => Promise<void>, failMsg: string) {
@@ -45,10 +46,12 @@ export default function AchievementCategoryManager({
     if (!name) return
     const last = categories[categories.length - 1]
     await run(
-      () => addAchievementCategory(name, (last?.position ?? 0) + 1),
+      () =>
+        addAchievementCategory(name, newNameEn.trim(), (last?.position ?? 0) + 1),
       'Gagal menambah kategori',
     )
     setNewName('')
+    setNewNameEn('')
   }
 
   async function handleMove(cat: AchievementCategory, dir: -1 | 1) {
@@ -90,21 +93,32 @@ export default function AchievementCategoryManager({
               ↓
             </MiniBtn>
           </div>
-          <InlineText
-            className="min-w-0 flex-1 font-mono text-sm"
-            value={cat.name}
-            placeholder="Nama kategori…"
-            ariaLabel="Edit nama kategori pencapaian"
-            onSave={async (v) => {
-              const name = v.trim()
-              if (name && name !== cat.name) {
+          <div className="min-w-0 flex-1">
+            <InlineTextBilingual
+              className="font-mono text-sm"
+              valueId={cat.name}
+              valueEn={cat.name_en ?? ''}
+              enabled
+              placeholder="Nama kategori (ID)…"
+              placeholderEn="Category name (EN) — optional…"
+              ariaLabel="Edit nama kategori pencapaian"
+              onSaveId={async (v) => {
+                const name = v.trim()
+                if (name && name !== cat.name) {
+                  await run(
+                    () => renameAchievementCategory(cat.id, name, cat.name_en ?? ''),
+                    'Gagal mengubah nama kategori',
+                  )
+                }
+              }}
+              onSaveEn={async (v) => {
                 await run(
-                  () => renameAchievementCategory(cat.id, name),
+                  () => renameAchievementCategory(cat.id, cat.name, v.trim()),
                   'Gagal mengubah nama kategori',
                 )
-              }
-            }}
-          />
+              }}
+            />
+          </div>
           <MiniBtn
             title="Hapus kategori"
             tone="danger"
@@ -132,13 +146,19 @@ export default function AchievementCategoryManager({
           e.preventDefault()
           void handleAdd()
         }}
-        className="flex items-center gap-2 pt-1"
+        className="flex flex-col gap-2 pt-1 sm:flex-row sm:items-center"
       >
         <input
           className="w-full flex-1 rounded-md border border-hairline bg-surface-3 px-2.5 py-1.5 text-sm text-foreground outline-none placeholder:text-white/45 focus:border-accent/60 focus:ring-1 focus:ring-accent/30"
           value={newName}
           onChange={(e) => setNewName(e.target.value)}
-          placeholder="Kategori baru (misal: Sertifikasi, Award)"
+          placeholder="Kategori baru (ID) — misal: Sertifikasi"
+        />
+        <input
+          className="w-full flex-1 rounded-md border border-hairline bg-surface-3 px-2.5 py-1.5 text-sm text-foreground outline-none placeholder:text-white/45 focus:border-accent/60 focus:ring-1 focus:ring-accent/30"
+          value={newNameEn}
+          onChange={(e) => setNewNameEn(e.target.value)}
+          placeholder="Category name (EN) — optional, misal: Certification"
         />
         <button
           type="submit"

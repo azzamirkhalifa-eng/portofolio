@@ -12,6 +12,7 @@
 create table if not exists public.categories (
   id        bigint generated always as identity primary key,
   name      text not null unique,
+  name_en   text not null default '',
   position  int  not null default 0
 );
 
@@ -113,6 +114,7 @@ grant execute on function public.increment_project_view(bigint) to anon, authent
 create table if not exists public.achievement_categories (
   id       bigint generated always as identity primary key,
   name     text not null unique,
+  name_en  text not null default '',
   position int  not null default 0
 );
 
