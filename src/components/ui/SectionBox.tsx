@@ -23,12 +23,15 @@ type SectionBoxProps = {
  * Sengaja TANPA overflow-hidden: PixelSnow tetap full-bleed di belakang
  * kotak (fixed layer), dan glow pojok About/Contact boleh "bocor" lembut
  * melewati sudut rounded sebagai aksen (keputusan user: sesuai rencana).
+ *
+ * Class `section-box` = penanda untuk override khusus mode cerah
+ * (bayangan lembut supaya panel terangkat dari background) di index.css.
  */
 export default function SectionBox({ id, className = '', children }: SectionBoxProps) {
   return (
     <section
       id={id}
-      className={`relative mx-auto my-8 w-full max-w-5xl scroll-mt-20 rounded-xl border border-hairline-strong bg-hairline-fill px-4 py-12 sm:my-12 sm:px-6 sm:py-16 lg:py-20 ${className}`}
+      className={`section-box relative mx-auto my-8 w-full max-w-5xl scroll-mt-20 rounded-xl border border-hairline-strong bg-hairline-fill px-4 py-12 sm:my-12 sm:px-6 sm:py-16 lg:py-20 ${className}`}
     >
       {children}
     </section>

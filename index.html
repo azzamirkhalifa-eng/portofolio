@@ -2,10 +2,35 @@
 <html lang="id">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <!-- Ikon tab: pakai logo yang sama dengan intro (public/LOGO.png). -->
+    <link rel="icon" type="image/png" href="/LOGO.png" />
+    <link rel="apple-touch-icon" href="/LOGO.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0a0a0a" />
-    <meta name="description" content="Portfolio pribadi" />
+
+    <!-- SEO dasar + Open Graph / Twitter Card (fallback statis).
+         Nilai-nilai ini di-update in-place oleh komponen <Seo> per
+         halaman (home / detail project / detail perjalanan) saat app
+         dijalankan. Fallback statis berguna untuk crawler yang tidak
+         menjalankan JavaScript. Ganti teks & tambah gambar og-image
+         (1200x630) bila perlu. -->
+    <meta
+      name="description"
+      content="Portofolio pribadi ZAMIR — kumpulan projek, pencapaian, dan cerita perjalanan seputar desain dan pengembangan web."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="ZAMIR" />
+    <meta property="og:title" content="ZAMIR — Portfolio" />
+    <meta
+      property="og:description"
+      content="Portofolio pribadi ZAMIR — kumpulan projek, pencapaian, dan cerita perjalanan seputar desain dan pengembangan web."
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="ZAMIR — Portfolio" />
+    <meta
+      name="twitter:description"
+      content="Portofolio pribadi ZAMIR — kumpulan projek, pencapaian, dan cerita perjalanan seputar desain dan pengembangan web."
+    />
     <title>ZAMIR — Portfolio</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -13,6 +38,23 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
+
+    <!-- Terapkan tema tersimpan SEBELUM app di-render supaya tidak ada
+         kedip (FOUC) saat mode cerah dimuat. Default: gelap. Key harus
+         sama dengan THEME_KEY di src/context/ThemeContext.tsx. -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('portfolio_theme')
+          document.documentElement.setAttribute(
+            'data-theme',
+            t === 'light' ? 'light' : 'dark',
+          )
+        } catch (e) {
+          document.documentElement.setAttribute('data-theme', 'dark')
+        }
+      })()
+    </script>
   </head>
   <body>
     <div id="root"></div>

@@ -1,4 +1,5 @@
 import PixelSnow from './fx/PixelSnow'
+import { useTheme } from '../context/ThemeContext'
 
 /**
  * Lapisan dekoratif global (React Bits — PixelSnow) yang menutupi
@@ -8,8 +9,13 @@ import PixelSnow from './fx/PixelSnow'
  * pointer-events-none supaya tidak halangi scroll/klik/Mode Edit.
  * Selalu aktif dari atas sampai bawah halaman — preset props di bawah
  * sengaja kalem (butir kecil, jarang, pelan, redup) supaya subtil.
+ *
+ * Warna butir mengikuti tema: putih di mode gelap, slate lembut di mode
+ * cerah supaya tetap terlihat (tidak "hilang") tanpa terlalu mencolok.
  */
 export default function BackgroundLayer() {
+  const { theme } = useTheme()
+
   return (
     <div
       aria-hidden
@@ -17,7 +23,7 @@ export default function BackgroundLayer() {
       style={{ position: 'fixed' }}
     >
       <PixelSnow
-        color="#ffffff"
+        color={theme === 'light' ? '#94a3b8' : '#ffffff'}
         flakeSize={0.006}
         minFlakeSize={1.25}
         pixelResolution={220}

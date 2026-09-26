@@ -11,10 +11,10 @@ type MiniBtnProps = {
 
 const tones = {
   default:
-    'border-hairline text-muted hover:border-white/40 hover:bg-white/5 hover:text-foreground',
+    'border-hairline text-muted hover:border-faint/40 hover:bg-faint/5 hover:text-foreground',
   danger:
     'border-hairline text-muted hover:border-red-400/50 hover:bg-red-400/5 hover:text-red-400',
-  accent: 'border-accent/40 text-accent hover:bg-accent/10 hover:border-accent',
+  accent: 'border-accent/40 text-accent-text hover:bg-accent/10 hover:border-accent',
 }
 
 /** Tombol ikon kecil untuk kontrol Mode Edit (panah, hapus, dll). */
@@ -63,7 +63,7 @@ export function GhostBtn({
   const toneCls =
     tone === 'danger'
       ? 'border-red-400/30 text-red-400 hover:bg-red-400/10'
-      : 'border-hairline text-foreground hover:border-white/40 hover:bg-surface-2'
+      : 'border-hairline text-foreground hover:border-faint/40 hover:bg-surface-2'
   return (
     <button
       type="button"

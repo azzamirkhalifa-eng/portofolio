@@ -110,7 +110,7 @@ export default function FeatureItems({
                   editMode ? undefined : () => onOpenImage(item.image_url)
                 }
                 aria-label={`Perbesar gambar fitur ${num}`}
-                className={`block w-full overflow-hidden rounded-xl border border-hairline bg-surface-2 transition-colors hover:border-white/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
+                className={`block w-full overflow-hidden rounded-xl border border-hairline bg-surface-2 transition-colors hover:border-faint/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
                   /* Mode Edit: klik lightbox mati — efek zoom/cue tidak
                      dipasang supaya hover gambar tetap fokus ke edit. */
                   editMode ? '' : 'zoom-hover cursor-zoom-in'

@@ -1,6 +1,12 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { getSession, signInWithPassword } from '../../lib/auth'
+import {
+  clearLoginFailures,
+  formatLockRemaining,
+  getLoginLockRemainingMs,
+  recordLoginFailure,
+} from '../../lib/loginThrottle'
 import { Feedback, inputCls, labelCls } from '../../components/admin/FormControls'
 
 export default function LoginPage() {
@@ -9,6 +15,8 @@ export default function LoginPage() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  // Sisa waktu blokir (ms) kalau percobaan login gagal berturut-turut.
+  const [lockRemaining, setLockRemaining] = useState(0)
 
   // Kalau sudah login, langsung ke dashboard
   const [checking, setChecking] = useState(true)
@@ -26,9 +34,36 @@ export default function LoginPage() {
     }
   }, [])
 
+  // Hitung mundur selama terkunci supaya pesan & tombol ikut ter-update.
+  useEffect(() => {
+    const left = getLoginLockRemainingMs()
+    setLockRemaining(left)
+    if (left > 0) {
+      setError(
+        `Terlalu banyak percobaan. Coba lagi dalam ${formatLockRemaining(left)}.`,
+      )
+    }
+    const timer = window.setInterval(() => {
+      const rem = getLoginLockRemainingMs()
+      setLockRemaining(rem)
+      if (rem <= 0) window.clearInterval(timer)
+    }, 1000)
+    return () => window.clearInterval(timer)
+  }, [])
+
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
     setError(null)
+
+    // Masih terkunci karena percobaan gagal berturut-turut?
+    const locked = getLoginLockRemainingMs()
+    if (locked > 0) {
+      setLockRemaining(locked)
+      setError(
+        `Terlalu banyak percobaan. Coba lagi dalam ${formatLockRemaining(locked)}.`,
+      )
+      return
+    }
 
     if (!email.trim() || !password) {
       setError('Email dan password wajib diisi.')
@@ -43,14 +78,23 @@ export default function LoginPage() {
     setLoading(false)
 
     if (error || !session) {
-      setError(
-        error?.message.toLowerCase().includes('invalid login credentials')
-          ? 'Email atau password salah. Coba lagi.'
-          : `Login gagal: ${error?.message ?? 'terjadi kesalahan.'}`,
-      )
+      // Pesan SELALU generik: jangan bocorkan apakah email terdaftar atau
+      // password yang salah (Supabase mengembalikan pesan yang sama untuk
+      // keduanya, dan detail error server tidak pernah ditampilkan).
+      const lock = recordLoginFailure()
+      if (lock > 0) {
+        setLockRemaining(lock)
+        setError(
+          `Terlalu banyak percobaan. Coba lagi dalam ${formatLockRemaining(lock)}.`,
+        )
+      } else {
+        setError('Email atau password salah. Coba lagi.')
+      }
       return
     }
 
+    // Sukses — reset hitungan kegagalan.
+    clearLoginFailures()
     navigate('/admin/dashboard', { replace: true })
   }
 
@@ -69,11 +113,11 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-6 py-16 text-foreground">
       <div className="w-full max-w-sm">
-        <p className="font-mono text-xs uppercase tracking-[0.25em] text-accent">
+        <p className="font-mono text-xs uppercase tracking-[0.25em] text-accent-text">
           Admin
         </p>
         <h1 className="mt-3 text-3xl font-extrabold tracking-tight">
-          Masuk<span className="text-accent">.</span>
+          Masuk<span className="text-accent-text">.</span>
         </h1>
         <p className="mt-2 text-sm text-muted">
           Login dengan akun admin untuk mengelola konten website.
@@ -113,16 +157,20 @@ export default function LoginPage() {
 
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || lockRemaining > 0}
             className="w-full rounded-md bg-accent px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-accent-hover disabled:opacity-60"
           >
-            {loading ? 'Memproses…' : 'Login'}
+            {loading
+              ? 'Memproses…'
+              : lockRemaining > 0
+                ? `Terkunci (${formatLockRemaining(lockRemaining)})`
+                : 'Login'}
           </button>
         </form>
 
-        <p className="mt-4 text-center text-xs text-white/25">
+        <p className="mt-4 text-center text-xs text-faint/25">
           Kembali ke website{' '}
-          <a href="/" className="text-accent hover:underline">
+          <a href="/" className="text-accent-text hover:underline">
             →
           </a>
         </p>

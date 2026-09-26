@@ -4,6 +4,11 @@ import { useProjects } from '../hooks/useProjects'
 import { useCategories } from '../hooks/useCategories'
 import { useCustomSections } from '../hooks/useCustomSections'
 import { useAchievements } from '../hooks/useAchievements'
+import { useLanguage } from '../context/LanguageContext'
+import { pick } from '../lib/i18n'
+import { summarize, DEFAULT_DESCRIPTION } from '../lib/seo'
+import Seo from '../components/Seo'
+import SplashIntro from '../components/SplashIntro'
 import Hero from '../components/Hero'
 import About from '../components/About'
 import Achievements from '../components/Achievements'
@@ -24,9 +29,25 @@ export default function HomePage() {
   const { categories } = useCategories()
   const { sections } = useCustomSections()
   const { achievements, loading: achievementsLoading } = useAchievements()
+  const { lang } = useLanguage()
+
+  // Meta Open Graph halaman utama: nama + tagline singkat dari profil.
+  const name = profile?.name ?? 'ZAMIR'
+  const tagline = pick(profile?.tagline, profile?.tagline_en, lang)
+  const aboutText = pick(profile?.about_text, profile?.about_text_en, lang)
 
   return (
     <>
+      <Seo
+        title={tagline ? `${name} — ${summarize(tagline, 70)}` : `${name} — Portfolio`}
+        description={aboutText || tagline || DEFAULT_DESCRIPTION}
+        image={profile?.avatar_url || null}
+        path="/"
+      />
+
+      {/* Intro/splash singkat — hanya di halaman utama, sekali per sesi. */}
+      <SplashIntro name={name} />
+
       <Hero profile={profile} loading={profileLoading} />
 
       <About

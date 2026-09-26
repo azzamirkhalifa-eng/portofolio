@@ -130,7 +130,7 @@ function ProficiencyControl({
         }}
         className="min-w-0 flex-1 accent-accent"
       />
-      <span className="w-10 shrink-0 text-right font-mono text-xs text-accent">
+      <span className="w-10 shrink-0 text-right font-mono text-xs text-accent-text">
         {value}%
       </span>
     </div>
@@ -173,7 +173,7 @@ function SkillEditor({
   return (
     <div className="mt-3 space-y-2">
       {skills.length === 0 && (
-        <p className="text-sm text-white/25">Belum ada skill.</p>
+        <p className="text-sm text-faint/25">Belum ada skill.</p>
       )}
       {skills.map((skill, idx) => (
         <div
@@ -253,7 +253,7 @@ function SkillEditor({
 
       <form onSubmit={handleAdd} className="flex items-center gap-2 pt-1">
         <input
-          className="w-full flex-1 rounded-md border border-hairline bg-surface-3 px-2.5 py-1.5 text-sm text-foreground outline-none placeholder:text-white/45 focus:border-accent/60 focus:ring-1 focus:ring-accent/30"
+          className="w-full flex-1 rounded-md border border-hairline bg-surface-3 px-2.5 py-1.5 text-sm text-foreground outline-none placeholder:text-faint/45 focus:border-accent/60 focus:ring-1 focus:ring-accent/30"
           value={newLabel}
           onChange={(e) => setNewLabel(e.target.value)}
           placeholder="Skill baru (misal: Next.js)"

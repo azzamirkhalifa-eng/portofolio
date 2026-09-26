@@ -13,6 +13,8 @@ import { useEditMode } from '../context/EditModeContext'
 import { useLanguage } from '../context/LanguageContext'
 import { formatEntryDate, pick, t, ui } from '../lib/i18n'
 import type { Slide } from 'yet-another-react-lightbox'
+import Seo from '../components/Seo'
+import ShareButtons from '../components/ShareButtons'
 
 function DetailSkeleton() {
   return (
@@ -127,6 +129,10 @@ export default function JourneyDetailPage() {
   if (!entry) {
     return (
       <section className="mx-auto max-w-5xl px-6 py-24 text-center">
+        <Seo
+          title={`${t(ui.ceritaTidakDitemukan, lang)} — ZAMIR`}
+          description={t(ui.ceritaTidakDitemukanDesc, lang)}
+        />
         <p className="font-mono text-xs uppercase tracking-[0.2em] text-muted">
           404
         </p>
@@ -147,6 +153,17 @@ export default function JourneyDetailPage() {
 
   return (
     <article className="mx-auto max-w-5xl px-6 pb-24 pt-10 sm:pt-14">
+      {/* Meta dinamis: judul + cuplikan cerita + foto hero perjalanan ini. */}
+      <Seo
+        title={`${title} — ZAMIR`}
+        description={
+          pick(entry.excerpt, entry.excerpt_en, lang) ||
+          pick(entry.full_story, entry.full_story_en, lang)
+        }
+        image={heroImage || null}
+        path={`/perjalanan/${entry.slug}`}
+        type="article"
+      />
       {/* ── HERO: foto pertama galeri sebagai gambar besar full-width
           di atas — pola visual sama dengan hero di halaman detail
           project (AdaptiveImage: rasio asli dijaga, tinggi maks ~70vh,
@@ -188,7 +205,7 @@ export default function JourneyDetailPage() {
 
       {/* Identitas cerita: kategori → judul → tanggal */}
       <div className="mt-10 max-w-[46rem]">
-        <p className="font-mono text-xs uppercase tracking-[0.25em] text-accent">
+        <p className="font-mono text-xs uppercase tracking-[0.25em] text-accent-text">
           {categoryName ?? t(ui.perjalananJudul, lang)}
         </p>
         <h1
@@ -237,7 +254,7 @@ export default function JourneyDetailPage() {
             </p>
           ) : (
             <>
-              <p className="mt-1.5 text-[11px] leading-relaxed text-white/35">
+              <p className="mt-1.5 text-[11px] leading-relaxed text-faint/35">
                 Foto-foto galeri di bawah cerita. Foto utama besar di atas
                 halaman diatur terpisah lewat Dashboard → Perjalanan.
               </p>
@@ -285,7 +302,7 @@ export default function JourneyDetailPage() {
                   type="button"
                   onClick={() => openLightbox(i + (heroImage ? 1 : 0))}
                   aria-label={`Perbesar gambar ${i + 1 + (heroImage ? 1 : 0)} dari ${lightboxSlides.length}`}
-                  className="zoom-hover block w-full overflow-hidden rounded-lg border border-hairline bg-surface-2 transition-colors hover:border-white/25"
+                  className="zoom-hover block w-full overflow-hidden rounded-lg border border-hairline bg-surface-2 transition-colors hover:border-faint/25"
                 >
                   <SmoothImage
                     src={src}
@@ -314,7 +331,7 @@ export default function JourneyDetailPage() {
               <span className="block font-mono text-[10px] uppercase tracking-[0.2em] text-muted">
                 {t(ui.sebelumnya, lang)}
               </span>
-              <span className="mt-1 block truncate text-sm font-medium text-foreground transition-colors group-hover:text-accent">
+              <span className="mt-1 block truncate text-sm font-medium text-foreground transition-colors group-hover:text-accent-text">
                 {pick(prev.title, prev.title_en, lang)}
               </span>
             </Link>
@@ -330,7 +347,7 @@ export default function JourneyDetailPage() {
               <span className="block font-mono text-[10px] uppercase tracking-[0.2em] text-muted">
                 {t(ui.berikutnya, lang)}
               </span>
-              <span className="mt-1 block truncate text-sm font-medium text-foreground transition-colors group-hover:text-accent">
+              <span className="mt-1 block truncate text-sm font-medium text-foreground transition-colors group-hover:text-accent-text">
                 {pick(next.title, next.title_en, lang)}
               </span>
             </Link>
@@ -339,6 +356,13 @@ export default function JourneyDetailPage() {
           )}
         </nav>
       )}
+
+      {/* Tombol bagikan — di bagian bawah cerita, setelah navigasi. */}
+      <ShareButtons
+        path={`/perjalanan/${entry.slug}`}
+        title={pick(entry.title, entry.title_en, lang)}
+        className="mt-10"
+      />
 
       {/* Lightbox (yet-another-react-lightbox) — pola sama dengan detail
           project: tutup via ✕/Esc/klik luar, pindah via panah/keyboard/

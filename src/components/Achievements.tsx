@@ -109,11 +109,11 @@ function AchievementCard({
               className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.05]"
             />
           ) : (
-            <div className="flex h-full w-full flex-col items-center justify-center gap-1.5 font-mono text-xs uppercase tracking-[0.3em] text-white/15">
+            <div className="flex h-full w-full flex-col items-center justify-center gap-1.5 font-mono text-xs uppercase tracking-[0.3em] text-faint/15">
               <span aria-hidden className="text-2xl">🏅</span>
               No Gambar
               {enabled && (
-                <span className="text-[10px] normal-case tracking-normal text-accent">
+                <span className="text-[10px] normal-case tracking-normal text-accent-text">
                   klik untuk upload
                 </span>
               )}
@@ -123,7 +123,7 @@ function AchievementCard({
       </div>
 
       <div className="flex flex-1 flex-col p-5">
-        <h3 className="font-semibold tracking-tight text-foreground transition-colors group-hover:text-accent">
+        <h3 className="font-semibold tracking-tight text-foreground transition-colors group-hover:text-accent-text">
           <InlineTextBilingual
             valueId={item.title}
             valueEn={item.title_en ?? ''}
@@ -145,7 +145,7 @@ function AchievementCard({
           />
         </h3>
 
-        {meta && <p className="mt-2 font-mono text-xs text-accent">{meta}</p>}
+        {meta && <p className="mt-2 font-mono text-xs text-accent-text">{meta}</p>}
 
         {pick(item.description, item.description_en, lang) && (
           <p className="project-card-text mt-2 line-clamp-3 leading-relaxed text-muted">
@@ -154,7 +154,7 @@ function AchievementCard({
         )}
 
         {detailTo && (
-          <span className="mt-auto inline-flex items-center gap-1.5 pt-5 text-sm font-medium text-accent transition-colors group-hover:text-accent-hover">
+          <span className="mt-auto inline-flex items-center gap-1.5 pt-5 text-sm font-medium text-accent-text transition-colors group-hover:text-accent-hover">
             {t(ui.lihatDetail, lang)}
             <span aria-hidden>→</span>
           </span>
@@ -249,7 +249,7 @@ function AchievementCard({
                 ✕
               </MiniBtn>
             </div>
-            <p className="font-mono text-[10px] text-white/25">
+            <p className="font-mono text-[10px] text-faint/25">
               Penyelenggara: {item.issuer || '(kosong)'}
               {(item.issuer_en ?? '').trim() !== '' && ` / EN: ${item.issuer_en}`} · Tahun:{' '}
               {item.year || '(kosong)'}
@@ -261,7 +261,7 @@ function AchievementCard({
   )
 
   return (
-    <article className="reveal group flex flex-col overflow-hidden rounded-lg border border-hairline bg-surface transition-colors hover:border-white/20">
+    <article className="reveal group flex flex-col overflow-hidden rounded-lg border border-hairline bg-surface transition-colors hover:border-faint/20">
       {detailTo ? (
         <Link
           to={detailTo}
@@ -366,7 +366,7 @@ export default function Achievements({
                 type="button"
                 onClick={() => void handleAdd()}
                 disabled={busy}
-                className="rounded-md border border-dashed border-white/15 px-3.5 py-2 font-mono text-xs uppercase tracking-[0.2em] text-muted transition-colors hover:border-accent/50 hover:text-accent disabled:opacity-50"
+                className="rounded-md border border-dashed border-faint/15 px-3.5 py-2 font-mono text-xs uppercase tracking-[0.2em] text-muted transition-colors hover:border-accent/50 hover:text-accent-text disabled:opacity-50"
               >
                 + Tambah
               </button>
@@ -391,7 +391,7 @@ export default function Achievements({
             className={`shrink-0 rounded-full border px-4 py-1.5 font-mono text-xs transition-colors ${
               filter === 'all'
                 ? 'border-accent bg-accent text-white'
-                : 'border-hairline text-muted hover:border-white/25 hover:text-foreground'
+                : 'border-hairline text-muted hover:border-faint/25 hover:text-foreground'
             }`}
           >
             {t(ui.semua, lang)}
@@ -406,7 +406,7 @@ export default function Achievements({
                 className={`shrink-0 rounded-full border px-4 py-1.5 font-mono text-xs transition-colors ${
                   active
                     ? 'border-accent bg-accent text-white'
-                    : 'border-hairline text-muted hover:border-white/25 hover:text-foreground'
+                    : 'border-hairline text-muted hover:border-faint/25 hover:text-foreground'
                 }`}
               >
                 {pick(cat.name, cat.name_en, lang)}

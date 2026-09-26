@@ -86,7 +86,7 @@ export default function TypographyPanel({
           <label key={key} className="block">
             <span className="mb-1 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.15em] text-muted">
               <span>{label}</span>
-              <span className="text-accent">{live[key]}%</span>
+              <span className="text-accent-text">{live[key]}%</span>
             </span>
             <input
               type="range"
@@ -107,7 +107,7 @@ export default function TypographyPanel({
           </label>
         ))}
       </div>
-      <p className="mt-2 text-[10px] text-white/25">
+      <p className="mt-2 text-[10px] text-faint/25">
         100% = ukuran default tema. Berlaku ke semua halaman secara realtime.
       </p>
     </div>

@@ -3,6 +3,7 @@ import SectionLabel from './ui/SectionLabel'
 import ProjectCard from './ProjectCard'
 import Button from './ui/Button'
 import SectionBox from './ui/SectionBox'
+import RandomButton from './ui/RandomButton'
 import CategoryManager from './edit/CategoryManager'
 import { GhostBtn, selectCls } from './edit/controls'
 import { useEditMode } from '../context/EditModeContext'
@@ -69,6 +70,11 @@ export default function Projects({
 
   const columns = Math.min(3, Math.max(1, profile?.projects_columns ?? 2))
   const gridCls = gridClsByCols[columns]
+
+  // Tujuan tombol "Acak": SEMUA project yang punya slug (halaman detail).
+  const randomTargets = projects
+    .filter((p) => p.slug)
+    .map((p) => ({ id: p.id, to: `/projects/${p.slug}` }))
 
   // Cuplikan beranda: kalau featured sedikit (1–3), kartu dirapikan ke
   // tengah (flex center) supaya tidak ada ruang kosong di kanan;
@@ -184,37 +190,44 @@ export default function Projects({
           </div>
         )}
 
-        {/* Filter kategori (hanya di halaman /projects) */}
-        {!preview && !loading && tabs.length > 0 && (
-          <div className="mt-14 flex gap-2 overflow-x-auto pb-1">
-            <button
-              type="button"
-              onClick={() => setFilter('all')}
-              className={`shrink-0 rounded-full border px-4 py-1.5 font-mono text-xs transition-colors ${
-                filter === 'all'
-                  ? 'border-accent bg-accent text-white'
-                  : 'border-hairline text-muted hover:border-white/25 hover:text-foreground'
-              }`}
-            >
-              {t(ui.semua, lang)}
-            </button>
-            {tabs.map((cat) => {
-              const active = filter === cat.id
-              return (
+        {/* Filter kategori + tombol "Acak" (hanya di halaman /projects) */}
+        {!preview && !loading && (
+          <div className="mt-14 flex flex-wrap items-center justify-between gap-3">
+            {tabs.length > 0 ? (
+              <div className="flex gap-2 overflow-x-auto pb-1">
                 <button
-                  key={cat.id}
                   type="button"
-                  onClick={() => setFilter(active ? 'all' : cat.id)}
+                  onClick={() => setFilter('all')}
                   className={`shrink-0 rounded-full border px-4 py-1.5 font-mono text-xs transition-colors ${
-                    active
+                    filter === 'all'
                       ? 'border-accent bg-accent text-white'
-                      : 'border-hairline text-muted hover:border-white/25 hover:text-foreground'
+                      : 'border-hairline text-muted hover:border-faint/25 hover:text-foreground'
                   }`}
                 >
-                  {pick(cat.name, cat.name_en, lang)}
+                  {t(ui.semua, lang)}
                 </button>
-              )
-            })}
+                {tabs.map((cat) => {
+                  const active = filter === cat.id
+                  return (
+                    <button
+                      key={cat.id}
+                      type="button"
+                      onClick={() => setFilter(active ? 'all' : cat.id)}
+                      className={`shrink-0 rounded-full border px-4 py-1.5 font-mono text-xs transition-colors ${
+                        active
+                          ? 'border-accent bg-accent text-white'
+                          : 'border-hairline text-muted hover:border-faint/25 hover:text-foreground'
+                      }`}
+                    >
+                      {pick(cat.name, cat.name_en, lang)}
+                    </button>
+                  )
+                })}
+              </div>
+            ) : (
+              <span />
+            )}
+            <RandomButton items={randomTargets} label={ui.acakProject} />
           </div>
         )}
 
@@ -269,10 +282,11 @@ export default function Projects({
 
         {/* Tombol "Lihat Semua Project" (hanya di cuplikan beranda) */}
         {preview && !loading && projects.length > 0 && (
-          <div className="mt-10 flex justify-center">
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
             <Button to="/projects" variant="ghost">
               {t(ui.lihatSemuaProject, lang)} <span aria-hidden>→</span>
             </Button>
+            <RandomButton items={randomTargets} label={ui.acakProject} />
           </div>
         )}
 
@@ -283,7 +297,7 @@ export default function Projects({
             type="button"
             onClick={() => void handleAdd()}
             disabled={busy}
-            className="mt-5 flex w-full items-center justify-center gap-2 rounded-lg border border-dashed border-white/15 px-5 py-4 font-mono text-xs uppercase tracking-[0.2em] text-muted transition-colors hover:border-accent/50 hover:text-accent disabled:opacity-50"
+            className="mt-5 flex w-full items-center justify-center gap-2 rounded-lg border border-dashed border-faint/15 px-5 py-4 font-mono text-xs uppercase tracking-[0.2em] text-muted transition-colors hover:border-accent/50 hover:text-accent-text disabled:opacity-50"
           >
             {busy ? 'Menambahkan…' : '+ Tambah Project'}
           </button>

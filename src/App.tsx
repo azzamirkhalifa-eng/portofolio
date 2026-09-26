@@ -8,10 +8,12 @@ import ProjectsPage from './pages/ProjectsPage'
 import ProjectDetailPage from './pages/ProjectDetailPage'
 import JourneyPage from './pages/JourneyPage'
 import JourneyDetailPage from './pages/JourneyDetailPage'
+import NotFoundPage from './pages/NotFoundPage'
 import ProtectedRoute from './components/admin/ProtectedRoute'
 import RevealObserver from './components/RevealObserver'
 import { EditModeProvider } from './context/EditModeContext'
 import { LanguageProvider } from './context/LanguageContext'
+import { ThemeProvider } from './context/ThemeContext'
 
 /* Halaman admin di-lazy-load supaya tidak membebani bundle publik. */
 const LoginPage = lazy(() => import('./pages/admin/LoginPage'))
@@ -30,6 +32,9 @@ function AdminFallback() {
 export default function App() {
   return (
     <BrowserRouter>
+      {/* Tema (gelap/cerah) tersedia di SEMUA halaman; preferensi
+          tersimpan di localStorage, default gelap. */}
+      <ThemeProvider>
       {/* Bahasa aktif (ID/EN) tersedia di SEMUA halaman; preferensi
           tersimpan di localStorage. */}
       <LanguageProvider>
@@ -53,6 +58,9 @@ export default function App() {
           {/* Link lama /about & /contact tetap jalan → scroll ke section-nya */}
           <Route path="/about" element={<Navigate to="/#about" replace />} />
           <Route path="/contact" element={<Navigate to="/#contact" replace />} />
+          {/* URL yang tidak dikenali → halaman 404 custom (dengan
+              Navbar & Footer karena berada di dalam PublicLayout). */}
+          <Route path="*" element={<NotFoundPage />} />
         </Route>
 
         {/* Admin */}
@@ -74,11 +82,11 @@ export default function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Suspense>
       </EditModeProvider>
       </LanguageProvider>
+      </ThemeProvider>
     </BrowserRouter>
   )
 }

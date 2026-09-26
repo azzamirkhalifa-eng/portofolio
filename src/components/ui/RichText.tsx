@@ -67,7 +67,7 @@ export function NumberBadge({ n }: { n: string }) {
   return (
     <span
       aria-hidden
-      className="mt-1 inline-flex h-6 min-w-6 shrink-0 items-center justify-center rounded-full border border-accent-soft bg-accent-subtle px-1 font-mono text-[11px] font-semibold leading-none text-accent"
+      className="mt-1 inline-flex h-6 min-w-6 shrink-0 items-center justify-center rounded-full border border-accent-soft bg-accent-subtle px-1 font-mono text-[11px] font-semibold leading-none text-accent-text"
     >
       {n}
     </span>

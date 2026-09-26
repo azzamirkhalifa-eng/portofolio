@@ -24,8 +24,8 @@ type InlineTextBilingualProps = {
 const tabCls = (active: boolean) =>
   `rounded-t-md border-b px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider transition-colors ${
     active
-      ? 'border-accent bg-accent/10 text-accent'
-      : 'border-transparent text-white/30 hover:text-foreground'
+      ? 'border-accent bg-accent/10 text-accent-text'
+      : 'border-transparent text-muted hover:text-foreground'
   }`
 
 /**

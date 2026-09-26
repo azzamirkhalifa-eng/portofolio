@@ -11,6 +11,8 @@ import RichDescription from '../components/edit/RichDescription'
 import SmoothImage from '../components/ui/SmoothImage'
 import ZoomCue from '../components/ui/ZoomCue'
 import { updateAchievement } from '../lib/mutations'
+import Seo from '../components/Seo'
+import ShareButtons from '../components/ShareButtons'
 
 /** Galeri masonry + lightbox — pola sama dengan halaman detail project. */
 function Gallery({ title, images }: { title: string; images: string[] }) {
@@ -46,7 +48,7 @@ function Gallery({ title, images }: { title: string; images: string[] }) {
               type="button"
               onClick={() => setOpenIndex(i)}
               aria-label={`Perbesar gambar ${i + 1} dari ${images.length}`}
-              className="zoom-hover block w-full overflow-hidden rounded-lg border border-hairline bg-surface-2 transition-colors hover:border-white/25"
+              className="zoom-hover block w-full overflow-hidden rounded-lg border border-hairline bg-surface-2 transition-colors hover:border-faint/25"
             >
               <SmoothImage
                 src={src}
@@ -184,6 +186,10 @@ export default function AchievementDetailPage() {
   if (!item) {
     return (
       <section className="mx-auto max-w-5xl px-6 py-24 text-center">
+        <Seo
+          title={`${t(ui.pencapaianTidakDitemukan, lang)} — ZAMIR`}
+          description={t(ui.pencapaianTidakDitemukanDesc, lang)}
+        />
         <p className="font-mono text-xs uppercase tracking-[0.2em] text-muted">
           404
         </p>
@@ -211,6 +217,14 @@ export default function AchievementDetailPage() {
 
   return (
     <article className="mx-auto max-w-5xl px-6 pb-24 pt-10 sm:pt-14">
+      {/* Meta dinamis: judul + deskripsi + foto pencapaian ini. */}
+      <Seo
+        title={`${pick(item.title, item.title_en, lang)} — ZAMIR`}
+        description={pick(item.description, item.description_en, lang) || description}
+        image={mainImage || null}
+        path={`/achievements/${item.slug}`}
+        type="article"
+      />
       <Link
         to="/achievements"
         data-edit-nav
@@ -222,7 +236,7 @@ export default function AchievementDetailPage() {
       <div className="mt-10 grid items-start gap-10 lg:grid-cols-2 lg:gap-14">
         {/* Kiri — teks */}
         <div className="min-w-0">
-          <p className="font-mono text-xs uppercase tracking-[0.25em] text-accent">
+          <p className="font-mono text-xs uppercase tracking-[0.25em] text-accent-text">
             {categoryName ?? t(ui.pencapaian, lang)}
           </p>
           <h1 className="mt-3 text-4xl font-extrabold tracking-tight sm:text-5xl">
@@ -289,7 +303,7 @@ export default function AchievementDetailPage() {
               <span className="block font-mono text-[10px] uppercase tracking-[0.2em] text-muted">
                 {t(ui.sebelumnya, lang)}
               </span>
-              <span className="mt-1 block truncate text-sm font-medium text-foreground transition-colors group-hover:text-accent">
+              <span className="mt-1 block truncate text-sm font-medium text-foreground transition-colors group-hover:text-accent-text">
                 {prev.title}
               </span>
             </Link>
@@ -305,7 +319,7 @@ export default function AchievementDetailPage() {
               <span className="block font-mono text-[10px] uppercase tracking-[0.2em] text-muted">
                 {t(ui.berikutnya, lang)}
               </span>
-              <span className="mt-1 block truncate text-sm font-medium text-foreground transition-colors group-hover:text-accent">
+              <span className="mt-1 block truncate text-sm font-medium text-foreground transition-colors group-hover:text-accent-text">
                 {next.title}
               </span>
             </Link>
@@ -314,6 +328,13 @@ export default function AchievementDetailPage() {
           )}
         </nav>
       )}
+
+      {/* Tombol bagikan — di bagian bawah halaman, setelah navigasi. */}
+      <ShareButtons
+        path={`/achievements/${item.slug}`}
+        title={pick(item.title, item.title_en, lang)}
+        className="mt-10"
+      />
     </article>
   )
 }

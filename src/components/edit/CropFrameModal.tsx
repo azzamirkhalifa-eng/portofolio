@@ -201,13 +201,13 @@ export default function CropFrameModal({
                   className={`flex flex-col items-center gap-1.5 rounded-lg border p-2.5 transition-colors ${
                     preset.id === p.id
                       ? 'border-accent bg-accent/10'
-                      : 'border-hairline hover:border-white/25'
+                      : 'border-hairline hover:border-faint/25'
                   }`}
                 >
                   {/* Preview bentuk bingkai (rasio tidak proporsional — cukup mengindikasikan bentuk). */}
                   <span
                     aria-hidden
-                    className="block w-full border border-white/40 bg-white/10"
+                    className="block w-full border border-faint/40 bg-faint/10"
                     style={{
                       aspectRatio:
                         p.aspect > 0 ? `${p.aspect}` : imgSize ? `${imgSize.w} / ${imgSize.h}` : '1',
@@ -231,7 +231,7 @@ export default function CropFrameModal({
               <button
                 type="button"
                 onClick={onCancel}
-                className="rounded-md border border-hairline px-4 py-2 text-sm text-muted transition-colors hover:border-white/25 hover:text-foreground"
+                className="rounded-md border border-hairline px-4 py-2 text-sm text-muted transition-colors hover:border-faint/25 hover:text-foreground"
               >
                 Batal
               </button>
@@ -309,7 +309,7 @@ export default function CropFrameModal({
                 type="button"
                 onClick={onCancel}
                 disabled={busy}
-                className="rounded-md border border-hairline px-4 py-2 text-sm text-muted transition-colors hover:border-white/25 hover:text-foreground disabled:opacity-50"
+                className="rounded-md border border-hairline px-4 py-2 text-sm text-muted transition-colors hover:border-faint/25 hover:text-foreground disabled:opacity-50"
               >
                 Batal
               </button>

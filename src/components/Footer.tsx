@@ -10,9 +10,9 @@ export default function Footer({ name }: FooterProps) {
       <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-3 px-6 py-10 sm:flex-row sm:py-12">
         <p className="text-sm text-muted">
           © {year} {name || 'Portfolio'}
-          <span className="text-accent">.</span>
+          <span className="text-accent-text">.</span>
         </p>
-        <p className="font-mono text-xs uppercase tracking-[0.2em] text-white/25">
+        <p className="font-mono text-xs uppercase tracking-[0.2em] text-faint/25">
           React · Vite · Supabase
         </p>
       </div>

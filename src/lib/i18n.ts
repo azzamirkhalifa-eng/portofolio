@@ -16,6 +16,8 @@ export const ui: Record<string, UiEntry> = {
   pencapaian: { id: 'Pencapaian', en: 'Achievements' },
   projects: { id: 'Projek', en: 'Projects' },
   contact: { id: 'Kontak', en: 'Contact' },
+  modeCerah: { id: 'Mode cerah', en: 'Light mode' },
+  modeGelap: { id: 'Mode gelap', en: 'Dark mode' },
 
   // Hero
   hubungiSaya: { id: 'Hubungi Saya', en: 'Contact Me' },
@@ -43,6 +45,39 @@ export const ui: Record<string, UiEntry> = {
     id: 'Pencapaian dengan alamat itu tidak ada — mungkin sudah dihapus atau link-nya salah.',
     en: "An achievement with that address doesn't exist — it may have been deleted or the link is wrong.",
   },
+
+  // Halaman 404 (route tidak dikenali)
+  notFoundTitle: { id: 'Halaman ini tidak ditemukan', en: 'This page could not be found' },
+  notFoundDesc: {
+    id: 'Sepertinya tautan yang kamu buka salah, sudah dipindahkan, atau memang tidak pernah ada. Tenang — kamu tidak tersesat jauh.',
+    en: "Looks like this link is wrong, has moved, or never existed. Don't worry — you're not far off track.",
+  },
+  notFoundRoute: { id: 'rute tidak ditemukan', en: 'route not found' },
+
+  // Command palette (Ctrl/⌘+K)
+  commandPaletteLabel: { id: 'Pencarian cepat', en: 'Quick search' },
+  commandPalettePlaceholder: {
+    id: 'Cari halaman, project, atau cerita…',
+    en: 'Search pages, projects, or stories…',
+  },
+  commandPaletteEmpty: {
+    id: 'Tidak ada hasil yang cocok.',
+    en: 'No matching results.',
+  },
+  commandPaletteHint: { id: 'Enter buka · Esc tutup', en: 'Enter to open · Esc to close' },
+  kategoriNavigasi: { id: 'NAVIGASI', en: 'NAVIGATION' },
+
+  // Tombol "Acak" (random project / cerita)
+  acak: { id: 'Acak', en: 'Random' },
+  acakProject: { id: 'Project acak', en: 'Random project' },
+  acakPerjalanan: { id: 'Cerita acak', en: 'Random story' },
+  acakTooltip: {
+    id: 'Buka satu pilihan secara acak',
+    en: 'Open one pick at random',
+  },
+  lewati: { id: 'Lewati', en: 'Skip' },
+  kategoriProject: { id: 'PROJECT', en: 'PROJECT' },
+  kategoriPerjalanan: { id: 'PERJALANAN', en: 'JOURNEY' },
   sebelumnya: { id: '← Sebelumnya', en: '← Previous' },
   berikutnya: { id: 'Berikutnya →', en: 'Next →' },
   tanpaLink: { id: '(tanpa link)', en: '(no link)' },
@@ -83,6 +118,13 @@ export const ui: Record<string, UiEntry> = {
   namaKosong: { id: 'Nama tidak boleh kosong.', en: 'Name cannot be empty.' },
   emailInvalid: { id: 'Format email tidak valid.', en: 'Invalid email format.' },
   pesanKosong: { id: 'Pesan tidak boleh kosong.', en: 'Message cannot be empty.' },
+  namaPanjang: { id: 'Nama maksimal 100 karakter.', en: 'Name must be at most 100 characters.' },
+  emailPanjang: { id: 'Email maksimal 200 karakter.', en: 'Email must be at most 200 characters.' },
+  pesanPanjang: { id: 'Pesan maksimal 2000 karakter.', en: 'Message must be at most 2000 characters.' },
+  terlaluCepat: {
+    id: 'Mohon tunggu sebentar sebelum mengirim pesan lagi.',
+    en: 'Please wait a moment before sending another message.',
+  },
   gagalMengirim: { id: 'Gagal mengirim. Coba lagi sebentar.', en: 'Failed to send. Please try again in a moment.' },
   namaPlaceholder: { id: 'Nama kamu', en: 'Your name' },
   pesanPlaceholder: { id: 'Halo, saya tertarik…', en: "Hi, I'm interested in…" },

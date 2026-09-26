@@ -58,7 +58,7 @@ function ArrowButton({
       title={label}
       disabled={disabled}
       onClick={onClick}
-      className="flex h-8 w-8 items-center justify-center rounded border border-hairline text-muted transition-colors hover:border-white/25 hover:text-foreground disabled:cursor-not-allowed disabled:opacity-30"
+      className="flex h-8 w-8 items-center justify-center rounded border border-hairline text-muted transition-colors hover:border-faint/25 hover:text-foreground disabled:cursor-not-allowed disabled:opacity-30"
     >
       {children}
     </button>
@@ -262,7 +262,7 @@ function ProjectForm({
             placeholder="kosongkan = otomatis dari judul"
           />
         </Field>
-        <p className="mt-1 font-mono text-[11px] text-white/35">
+        <p className="mt-1 font-mono text-[11px] text-faint/35">
           Halaman: /projects/{previewSlug || '…'}
         </p>
       </div>
@@ -374,7 +374,7 @@ function ProjectForm({
             setButtonsEn(be)
           }}
         />
-        <p className="mt-1 font-mono text-[11px] text-white/35">
+        <p className="mt-1 font-mono text-[11px] text-faint/35">
           Label + URL bebas, bisa lebih dari satu. Tombol pertama tampil
           solid, sisanya garis tepi. URL boleh kosong (opsional).
         </p>
@@ -393,12 +393,12 @@ function ProjectForm({
               className="h-16 w-28 rounded-md border border-hairline object-cover"
             />
           ) : (
-            <div className="flex h-16 w-28 items-center justify-center rounded-md border border-hairline bg-surface-2 font-mono text-[11px] text-white/25">
+            <div className="flex h-16 w-28 items-center justify-center rounded-md border border-hairline bg-surface-2 font-mono text-[11px] text-faint/25">
               No Thumbnail
             </div>
           )}
           <div className="flex-1">
-            <label className="inline-flex cursor-pointer items-center gap-2 rounded-md border border-hairline px-4 py-2 text-sm text-foreground transition-colors hover:border-white/25 hover:bg-surface-2">
+            <label className="inline-flex cursor-pointer items-center gap-2 rounded-md border border-hairline px-4 py-2 text-sm text-foreground transition-colors hover:border-faint/25 hover:bg-surface-2">
               {thumbUploading ? 'Uploading…' : 'Upload Thumbnail'}
               <input
                 type="file"
@@ -431,12 +431,12 @@ function ProjectForm({
               className="h-20 w-36 rounded-md border border-hairline object-cover"
             />
           ) : (
-            <div className="flex h-20 w-36 items-center justify-center rounded-md border border-hairline bg-surface-2 font-mono text-[11px] text-white/25">
+            <div className="flex h-20 w-36 items-center justify-center rounded-md border border-hairline bg-surface-2 font-mono text-[11px] text-faint/25">
               No Gambar
             </div>
           )}
           <div className="flex-1">
-            <label className="inline-flex cursor-pointer items-center gap-2 rounded-md border border-hairline px-4 py-2 text-sm text-foreground transition-colors hover:border-white/25 hover:bg-surface-2">
+            <label className="inline-flex cursor-pointer items-center gap-2 rounded-md border border-hairline px-4 py-2 text-sm text-foreground transition-colors hover:border-faint/25 hover:bg-surface-2">
               {urlUploading ? 'Uploading…' : 'Upload Gambar'}
               <input
                 type="file"
@@ -640,13 +640,13 @@ export default function ProjectsSection() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-xl font-bold tracking-tight">
-            Projects<span className="text-accent">.</span>
+            Projects<span className="text-accent-text">.</span>
           </h1>
           <p className="mt-1 text-sm text-muted">
             Kelola project: konten kartu, halaman detail (deskripsi lengkap,
             galeri screenshot, tombol, spesifikasi), kategori, dan pilihan
             tampil di beranda — semua tersimpan ke tabel{' '}
-            <code className="font-mono text-accent">projects</code>.
+            <code className="font-mono text-accent-text">projects</code>.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -656,8 +656,8 @@ export default function ProjectsSection() {
             title="Urutkan project berdasarkan jumlah view terbanyak"
             className={`rounded-md border px-4 py-2.5 text-sm transition-colors ${
               sortByViews
-                ? 'border-accent bg-accent/10 text-accent'
-                : 'border-hairline text-muted hover:border-white/25 hover:text-foreground'
+                ? 'border-accent bg-accent/10 text-accent-text'
+                : 'border-hairline text-muted hover:border-faint/25 hover:text-foreground'
             }`}
           >
             {sortByViews ? '★ Urut View' : 'Urut View'}
@@ -754,7 +754,7 @@ export default function ProjectsSection() {
                   className="h-14 w-24 rounded-md border border-hairline object-cover"
                 />
               ) : (
-                <div className="flex h-14 w-24 items-center justify-center rounded-md border border-hairline bg-surface-2 font-mono text-[10px] text-white/25">
+                <div className="flex h-14 w-24 items-center justify-center rounded-md border border-hairline bg-surface-2 font-mono text-[10px] text-faint/25">
                   No Img
                 </div>
               )}
@@ -765,13 +765,13 @@ export default function ProjectsSection() {
                   {project.id === topViewedId && (
                     <span
                       title="Project dengan view terbanyak"
-                      className="ml-2 rounded-sm border border-accent/40 bg-accent/10 px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-wider text-accent"
+                      className="ml-2 rounded-sm border border-accent/40 bg-accent/10 px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-wider text-accent-text"
                     >
                       ★ terpopuler
                     </span>
                   )}
                   {!project.featured && (
-                    <span className="ml-2 rounded-sm border border-white/10 px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-wider text-white/30">
+                    <span className="ml-2 rounded-sm border border-faint/10 px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-wider text-faint/30">
                       tidak di beranda
                     </span>
                   )}
@@ -811,7 +811,7 @@ export default function ProjectsSection() {
                   type="button"
                   disabled={busy}
                   onClick={() => setEditingId(project.id)}
-                  className="rounded-md border border-hairline px-3 py-2 text-sm text-foreground transition-colors hover:border-white/25 hover:bg-surface-2 disabled:opacity-50"
+                  className="rounded-md border border-hairline px-3 py-2 text-sm text-foreground transition-colors hover:border-faint/25 hover:bg-surface-2 disabled:opacity-50"
                 >
                   Edit
                 </button>

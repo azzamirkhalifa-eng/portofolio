@@ -20,6 +20,8 @@ import FeatureItemsEditor from '../components/edit/FeatureItemsEditor'
 import { effectiveFeatureItems, splitIntro } from '../lib/featureItems'
 import type { Slide } from 'yet-another-react-lightbox'
 import RichDescription from '../components/edit/RichDescription'
+import Seo from '../components/Seo'
+import ShareButtons from '../components/ShareButtons'
 import {
   hasRecordedProjectView,
   markProjectViewRecorded,
@@ -116,7 +118,7 @@ function Gallery({
               type="button"
               onClick={() => onOpen(globalIndex)}
               aria-label={`Perbesar gambar ${globalIndex + 1} dari ${allImages.length}`}
-              className="zoom-hover block w-full overflow-hidden rounded-lg border border-hairline bg-surface-2 transition-colors hover:border-white/25"
+              className="zoom-hover block w-full overflow-hidden rounded-lg border border-hairline bg-surface-2 transition-colors hover:border-faint/25"
             >
               <SmoothImage
                 src={src}
@@ -239,7 +241,7 @@ function PrevNextNav({
           <span className="block font-mono text-[10px] uppercase tracking-[0.2em] text-muted">
             {t(ui.sebelumnya, lang)}
           </span>
-          <span className="mt-1 block truncate text-sm font-medium text-foreground transition-colors group-hover:text-accent">
+          <span className="mt-1 block truncate text-sm font-medium text-foreground transition-colors group-hover:text-accent-text">
             {prev.title}
           </span>
         </Link>
@@ -255,7 +257,7 @@ function PrevNextNav({
           <span className="block font-mono text-[10px] uppercase tracking-[0.2em] text-muted">
             {t(ui.berikutnya, lang)}
           </span>
-          <span className="mt-1 block truncate text-sm font-medium text-foreground transition-colors group-hover:text-accent">
+          <span className="mt-1 block truncate text-sm font-medium text-foreground transition-colors group-hover:text-accent-text">
             {next.title}
           </span>
         </Link>
@@ -414,6 +416,11 @@ export default function ProjectDetailPage() {
   if (!project) {
     return (
       <section className="mx-auto max-w-5xl px-6 py-24 text-center">
+        <Seo
+          title={`${t(ui.projectTidakDitemukan, lang)} — ZAMIR`}
+          description={t(ui.projectTidakDitemukanDesc, lang)}
+          path={location.pathname}
+        />
         <p className="font-mono text-xs uppercase tracking-[0.2em] text-muted">
           404
         </p>          <h1 className="mt-4 text-2xl font-bold tracking-tight">
@@ -448,6 +455,17 @@ export default function ProjectDetailPage() {
 
   return (
     <article className="mx-auto max-w-5xl px-6 pb-24 pt-10 sm:pt-14">
+      {/* Meta dinamis: judul + cuplikan + gambar utama project ini. */}
+      <Seo
+        title={`${pick(project.title, project.title_en, lang)} — ZAMIR`}
+        description={
+          pick(project.description, project.description_en, lang) ||
+          pick(project.full_description, project.full_description_en, lang)
+        }
+        image={mainImage || null}
+        path={`/projects/${project.slug}`}
+        type="article"
+      />
       {/* Baris atas: kembali + tombol aksi project */}
       <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-4">
         <Link
@@ -469,7 +487,7 @@ export default function ProjectDetailPage() {
                 {btn.url ? (
                   <ExternalLinkIcon />
                 ) : (
-                  <span className="ml-1 text-white/40">(tanpa link)</span>
+                  <span className="ml-1 text-faint/40">(tanpa link)</span>
                 )}
               </Button>
             ))}
@@ -523,7 +541,7 @@ export default function ProjectDetailPage() {
       {/* Identitas project di bawah hero: kategori → judul → tags → intro.
           Kolom teks dibatasi ~736px supaya nyaman dibaca (tidak full lebar). */}
       <div className="mt-10 max-w-[46rem]">
-        <p className="font-mono text-xs uppercase tracking-[0.25em] text-accent">
+        <p className="font-mono text-xs uppercase tracking-[0.25em] text-accent-text">
           {categoryName ?? t(ui.projects, lang)}
         </p>
         <h1 className="mt-3 text-4xl font-extrabold tracking-tight sm:text-5xl">
@@ -639,6 +657,13 @@ export default function ProjectDetailPage() {
 
       {/* Prev / next */}
       <PrevNextNav prev={prev} next={next} />
+
+      {/* Tombol bagikan — di bagian bawah artikel, setelah navigasi. */}
+      <ShareButtons
+        path={`/projects/${project.slug}`}
+        title={pick(project.title, project.title_en, lang)}
+        className="mt-10"
+      />
 
     </article>
   )

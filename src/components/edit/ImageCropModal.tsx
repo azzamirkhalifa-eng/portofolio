@@ -235,7 +235,7 @@ export default function ImageCropModal({
             type="button"
             onClick={onCancel}
             disabled={busy}
-            className="rounded-md border border-hairline px-4 py-2 text-sm text-muted transition-colors hover:border-white/25 hover:text-foreground disabled:opacity-50"
+            className="rounded-md border border-hairline px-4 py-2 text-sm text-muted transition-colors hover:border-faint/25 hover:text-foreground disabled:opacity-50"
           >
             Batal
           </button>

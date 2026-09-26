@@ -47,7 +47,7 @@ export default function AdminLayout({
             href="/"
             className="font-mono text-sm font-medium tracking-tight text-foreground transition-opacity hover:opacity-80"
           >
-            admin<span className="text-accent">.</span>
+            admin<span className="text-accent-text">.</span>
           </a>
 
           <button
@@ -89,10 +89,10 @@ export default function AdminLayout({
                   className={`flex shrink-0 items-center gap-2.5 rounded-md border px-3.5 py-2.5 text-left text-sm transition-colors ${
                     active
                       ? 'border-accent/50 bg-accent/5 text-foreground'
-                      : 'border-hairline text-muted hover:border-white/20 hover:text-foreground'
+                      : 'border-hairline text-muted hover:border-faint/20 hover:text-foreground'
                   }`}
                 >
-                  <span className="font-mono text-[10px] text-accent">
+                  <span className="font-mono text-[10px] text-accent-text">
                     {tab.index}
                   </span>
                   {tab.label}

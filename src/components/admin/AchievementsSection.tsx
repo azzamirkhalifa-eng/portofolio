@@ -53,7 +53,7 @@ function ArrowButton({
       title={label}
       disabled={disabled}
       onClick={onClick}
-      className="flex h-7 w-7 items-center justify-center rounded border border-hairline text-muted transition-colors hover:border-white/25 hover:text-foreground disabled:cursor-not-allowed disabled:opacity-30"
+      className="flex h-7 w-7 items-center justify-center rounded border border-hairline text-muted transition-colors hover:border-faint/25 hover:text-foreground disabled:cursor-not-allowed disabled:opacity-30"
     >
       {children}
     </button>
@@ -259,12 +259,12 @@ function AchievementForm({
               className="h-20 w-36 rounded-md border border-hairline object-cover"
             />
           ) : (
-            <div className="flex h-20 w-36 items-center justify-center rounded-md border border-hairline bg-surface-2 font-mono text-[11px] text-white/25">
+            <div className="flex h-20 w-36 items-center justify-center rounded-md border border-hairline bg-surface-2 font-mono text-[11px] text-faint/25">
               No Foto
             </div>
           )}
           <div className="flex-1">
-            <label className="inline-flex cursor-pointer items-center gap-2 rounded-md border border-hairline px-4 py-2 text-sm text-foreground transition-colors hover:border-white/25 hover:bg-surface-2">
+            <label className="inline-flex cursor-pointer items-center gap-2 rounded-md border border-hairline px-4 py-2 text-sm text-foreground transition-colors hover:border-faint/25 hover:bg-surface-2">
               {uploading ? 'Uploading…' : 'Upload Foto Sertifikat'}
               <input
                 type="file"
@@ -320,7 +320,7 @@ function AchievementForm({
           />
         </Field>
       </div>
-      <p className="font-mono text-[11px] text-white/35">
+      <p className="font-mono text-[11px] text-faint/35">
         Halaman: /achievements/{state.slug?.trim() || 'otomatis-dari-judul'}
       </p>
 
@@ -332,7 +332,7 @@ function AchievementForm({
         >
           {busy ? 'Menyimpan…' : 'Simpan Pencapaian'}
         </button>
-        <span className="font-mono text-[11px] text-white/30">
+        <span className="font-mono text-[11px] text-faint/30">
           Langsung tampil di section Pencapaian halaman utama
         </span>
       </div>
@@ -462,7 +462,7 @@ export default function AchievementsSection() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-xl font-bold tracking-tight">
-            Pencapaian<span className="text-accent">.</span>
+            Pencapaian<span className="text-accent-text">.</span>
           </h1>
           <p className="mt-1 text-sm text-muted">
             Kelola sertifikat &amp; pencapaian: pilih yang tampil di beranda
@@ -474,7 +474,7 @@ export default function AchievementsSection() {
           <button
             type="button"
             onClick={() => setManageCats((v) => !v)}
-            className="rounded-md border border-hairline px-3 py-2 text-sm text-foreground transition-colors hover:border-white/25 hover:bg-surface-2"
+            className="rounded-md border border-hairline px-3 py-2 text-sm text-foreground transition-colors hover:border-faint/25 hover:bg-surface-2"
           >
             {manageCats ? 'Tutup Kategori' : 'Kelola Kategori'}
           </button>
@@ -541,7 +541,7 @@ export default function AchievementsSection() {
                 className="h-14 w-24 rounded-md border border-hairline object-cover"
               />
             ) : (
-              <div className="flex h-14 w-24 items-center justify-center rounded-md border border-hairline bg-surface-2 font-mono text-[10px] text-white/25">
+              <div className="flex h-14 w-24 items-center justify-center rounded-md border border-hairline bg-surface-2 font-mono text-[10px] text-faint/25">
                 No Img
               </div>
             )}
@@ -550,7 +550,7 @@ export default function AchievementsSection() {
               <p className="truncate text-sm font-medium text-foreground">
                 {item.title || '(tanpa judul)'}
                 {!item.featured && (
-                  <span className="ml-2 rounded-sm border border-white/10 px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-wider text-white/30">
+                  <span className="ml-2 rounded-sm border border-faint/10 px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-wider text-faint/30">
                     tidak di beranda
                   </span>
                 )}
@@ -573,8 +573,8 @@ export default function AchievementsSection() {
                 onClick={() => void handleToggleFeatured(item)}
                 className={`rounded-md border px-3 py-2 text-sm transition-colors disabled:opacity-50 ${
                   item.featured
-                    ? 'border-accent/40 bg-accent/10 text-accent'
-                    : 'border-hairline text-muted hover:border-white/25 hover:text-foreground'
+                    ? 'border-accent/40 bg-accent/10 text-accent-text'
+                    : 'border-hairline text-muted hover:border-faint/25 hover:text-foreground'
                 }`}
               >
                 {item.featured ? '★ Di beranda' : '☆ Beranda'}
@@ -583,7 +583,7 @@ export default function AchievementsSection() {
                 type="button"
                 disabled={busy}
                 onClick={() => setEditingId(item.id)}
-                className="rounded-md border border-hairline px-3 py-2 text-sm text-foreground transition-colors hover:border-white/25 hover:bg-surface-2 disabled:opacity-50"
+                className="rounded-md border border-hairline px-3 py-2 text-sm text-foreground transition-colors hover:border-faint/25 hover:bg-surface-2 disabled:opacity-50"
               >
                 Edit
               </button>

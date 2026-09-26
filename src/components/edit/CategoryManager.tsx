@@ -89,14 +89,14 @@ export default function CategoryManager({
         <p className="font-mono text-xs uppercase tracking-[0.2em] text-muted">
           Kelola Kategori
         </p>
-        <p className="text-[11px] text-white/25">
+        <p className="text-[11px] text-faint/25">
           Tab filter project di atas mengikuti daftar ini
         </p>
       </div>
 
       {/* Daftar kategori */}
       {categories.length === 0 && (
-        <p className="text-sm text-white/25">Belum ada kategori.</p>
+        <p className="text-sm text-faint/25">Belum ada kategori.</p>
       )}
       {categories.map((cat, idx) => (
         <div key={cat.id} className="space-y-2">
@@ -147,7 +147,7 @@ export default function CategoryManager({
                 }}
               />
             </div>
-            <span className="font-mono text-[10px] text-white/25">
+            <span className="font-mono text-[10px] text-faint/25">
               {usedCounts[cat.id] ?? 0} project
             </span>
             <MiniBtn
@@ -212,13 +212,13 @@ export default function CategoryManager({
         className="flex flex-col gap-2 pt-1 sm:flex-row sm:items-center"
       >
         <input
-          className="w-full flex-1 rounded-md border border-hairline bg-surface-3 px-2.5 py-1.5 text-sm text-foreground outline-none placeholder:text-white/45 focus:border-accent/60 focus:ring-1 focus:ring-accent/30"
+          className="w-full flex-1 rounded-md border border-hairline bg-surface-3 px-2.5 py-1.5 text-sm text-foreground outline-none placeholder:text-faint/45 focus:border-accent/60 focus:ring-1 focus:ring-accent/30"
           value={newName}
           onChange={(e) => setNewName(e.target.value)}
           placeholder="Kategori baru (ID) — misal: Web Design"
         />
         <input
-          className="w-full flex-1 rounded-md border border-hairline bg-surface-3 px-2.5 py-1.5 text-sm text-foreground outline-none placeholder:text-white/45 focus:border-accent/60 focus:ring-1 focus:ring-accent/30"
+          className="w-full flex-1 rounded-md border border-hairline bg-surface-3 px-2.5 py-1.5 text-sm text-foreground outline-none placeholder:text-faint/45 focus:border-accent/60 focus:ring-1 focus:ring-accent/30"
           value={newNameEn}
           onChange={(e) => setNewNameEn(e.target.value)}
           placeholder="Category name (EN) — optional, misal: Web Design"

@@ -4,6 +4,7 @@ import { useLocation, useOutlet } from 'react-router-dom'
 import Navbar from './Navbar'
 import Footer from './Footer'
 import ScrollToTop from './ScrollToTop'
+import CommandPalette from './CommandPalette'
 import BackgroundLayer from './BackgroundLayer'
 import TargetCursor from './fx/TargetCursor'
 import { useProfile } from '../hooks/useProfile'
@@ -48,6 +49,9 @@ export default function PublicLayout() {
   return (
     <>
       <ScrollToTop />
+
+      {/* Pencarian cepat Ctrl/⌘+K — hanya di halaman publik. */}
+      <CommandPalette />
 
       {/* Lapisan dekoratif global: full layar, belakang semua konten. */}
       <BackgroundLayer />

@@ -24,7 +24,7 @@ function ArrowButton({
       title={label}
       disabled={disabled}
       onClick={onClick}
-      className="flex h-7 w-7 items-center justify-center rounded border border-hairline text-muted transition-colors hover:border-white/25 hover:text-foreground disabled:cursor-not-allowed disabled:opacity-30"
+      className="flex h-7 w-7 items-center justify-center rounded border border-hairline text-muted transition-colors hover:border-faint/25 hover:text-foreground disabled:cursor-not-allowed disabled:opacity-30"
     >
       {children}
     </button>
@@ -85,7 +85,7 @@ function SkillRow({
         <button
           type="submit"
           disabled={busy}
-          className="shrink-0 rounded-md border border-hairline px-3 py-2 text-sm text-foreground transition-colors hover:border-white/25 hover:bg-surface-2 disabled:opacity-50"
+          className="shrink-0 rounded-md border border-hairline px-3 py-2 text-sm text-foreground transition-colors hover:border-faint/25 hover:bg-surface-2 disabled:opacity-50"
         >
           Save
         </button>
@@ -196,7 +196,7 @@ export default function SkillsSection() {
     <div className="space-y-6">
       <div>
         <h1 className="text-xl font-bold tracking-tight">
-          Skills<span className="text-accent">.</span>
+          Skills<span className="text-accent-text">.</span>
         </h1>
         <p className="mt-1 text-sm text-muted">
           Badge skill yang tampil di section About. Urutkan dengan tombol ↑/↓,

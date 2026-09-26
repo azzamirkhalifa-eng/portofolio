@@ -59,19 +59,19 @@ function AvatarVisual({ profile }: { profile: Profile }) {
       {/* Frame: gradient hairline 1px supaya "menyala" di tepi atas.
           Foto tampil dengan rasio asli (tidak dipotong); frame
           mengikuti bentuk foto. */}
-      <div className="relative w-fit rounded-2xl bg-gradient-to-b from-white/15 via-white/5 to-transparent p-px">
+      <div className="relative w-fit rounded-2xl bg-gradient-to-b from-faint/15 via-faint/5 to-transparent p-px">
         {profile.avatar_url ? (
           <img
             src={profile.avatar_url}
             alt={`Foto ${profile.name}`}
-            className="block h-auto max-h-[70vh] w-auto max-w-full rounded-[calc(1rem-1px)] border border-white/5 object-contain"
+            className="block h-auto max-h-[70vh] w-auto max-w-full rounded-[calc(1rem-1px)] border border-faint/5 object-contain"
           />
         ) : (
-          <div className="flex aspect-[4/5] w-64 flex-col items-center justify-center gap-5 rounded-[calc(1rem-1px)] border border-white/5 bg-gradient-to-br from-surface to-surface-2 sm:w-72">
-            <span className="font-mono text-7xl tracking-tight text-white/15">
+          <div className="flex aspect-[4/5] w-64 flex-col items-center justify-center gap-5 rounded-[calc(1rem-1px)] border border-faint/5 bg-gradient-to-br from-surface to-surface-2 sm:w-72">
+            <span className="font-mono text-7xl tracking-tight text-faint/15">
               {initial}
             </span>
-            <span className="rounded-sm border border-hairline bg-background/40 px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.3em] text-white/25">
+            <span className="rounded-sm border border-hairline bg-background/40 px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.3em] text-faint/25">
               Foto Profil
             </span>
           </div>
@@ -118,14 +118,14 @@ export default function Hero({ profile, loading }: HeroProps) {
         <div className="grid items-center gap-14 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
           {/* Kolom kiri — teks */}
           <div className="relative">
-            <p className="reveal font-mono text-xs uppercase tracking-[0.25em] text-accent">
+            <p className="reveal font-mono text-xs uppercase tracking-[0.25em] text-accent-text">
               Portfolio — {new Date().getFullYear()}
             </p>
 
             <h1 className="hero-name-text mt-8 reveal font-extrabold leading-[0.95] tracking-tighter">
               <InlineText
                 value={profile.name}
-                trailing={<span className="text-accent">.</span>}
+                trailing={<span className="text-accent-text">.</span>}
                 ariaLabel="Edit nama"
                 placeholder="Nama kamu…"
                 onSave={async (v) => {

@@ -3,6 +3,8 @@ import { useLanguage } from '../context/LanguageContext'
 import { t, ui } from '../lib/i18n'
 import { useAchievements } from '../hooks/useAchievements'
 import Achievements from '../components/Achievements'
+import Seo from '../components/Seo'
+import { DEFAULT_DESCRIPTION } from '../lib/seo'
 
 /**
  * Halaman /achievements — "Lihat Semua Pencapaian":
@@ -15,6 +17,11 @@ export default function AchievementsPage() {
 
   return (
     <>
+      <Seo
+        title={`${t(ui.pencapaian, lang)} — ZAMIR`}
+        description={DEFAULT_DESCRIPTION}
+        path="/achievements"
+      />
       <Link
         to="/"
         data-edit-nav

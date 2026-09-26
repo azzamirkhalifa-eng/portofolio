@@ -27,7 +27,7 @@ export default function FeaturedPanel() {
     <div className="space-y-6">
       <div>
         <h1 className="text-xl font-bold tracking-tight">
-          Tampil di Beranda<span className="text-accent">.</span>
+          Tampil di Beranda<span className="text-accent-text">.</span>
         </h1>
         <p className="mt-1 text-sm text-muted">
           Centang project yang ingin tampil di cuplikan beranda.{' '}
@@ -46,7 +46,7 @@ export default function FeaturedPanel() {
         {projects.map((p) => (
           <label
             key={p.id}
-            className="flex cursor-pointer items-center gap-3 rounded-lg border border-hairline bg-surface p-3 transition-colors hover:border-white/25"
+            className="flex cursor-pointer items-center gap-3 rounded-lg border border-hairline bg-surface p-3 transition-colors hover:border-faint/25"
           >
             <input
               type="checkbox"
@@ -73,7 +73,7 @@ export default function FeaturedPanel() {
         ))}
       </div>
 
-      <p className="text-xs text-white/25">
+      <p className="text-xs text-faint/25">
         Perubahan langsung tersimpan & tampil realtime di halaman publik.
       </p>
     </div>

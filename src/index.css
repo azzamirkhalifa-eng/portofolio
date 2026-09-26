@@ -45,6 +45,19 @@
      kotak section terbaca sebagai panel yang mengapung. */
   --color-hairline-fill: rgb(148 184 255 / 0.08);
 
+  /* Teks/border/isian redup yang sebelumnya memakai white/<opacity>.
+     Dark = putih (nilai persis seperti sebelumnya); Light = biru-hitam,
+     supaya tetap terbaca di atas latar terang. */
+  --color-faint: #ffffff;
+
+  /* Warna accent khusus TEKS/link. Dark = aksen yang sama; Light sedikit
+     lebih gelap supaya lolos kontras WCAG AA di atas background terang. */
+  --color-accent-text: #3b82f6;
+
+  /* Warna teks latar saat seleksi (dulu di-hardcode di ::selection). */
+  --color-selection-bg: rgb(59 130 246 / 0.35);
+  --color-selection-fg: #ffffff;
+
   /* Font: Inter (heading/body) + JetBrains Mono (label/tag) */
   --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
     sans-serif;
@@ -67,6 +80,9 @@
 
 @layer base {
   html {
+    /* Default dark sampai ThemeContext memasang data-theme. Kontrol form
+       & scrollbar tetap bergaya gelap sejak render pertama. */
+    color-scheme: dark;
     scroll-behavior: smooth;
     /* Elemen dekoratif sengaja membentang penuh (bleed) sampai
        melewati tepi layar — di-clip di sini supaya tidak memunculkan
@@ -84,13 +100,153 @@
     /* Lapisan dekoratif global (PixelSnow) dipasang fixed supaya
        menutupi penuh dari atas sampai ke bawah tanpa terpotong
        oleh batas body/section. */
-    background-color: #0b0f16;
-    color-scheme: dark;
   }
 
   ::selection {
-    background: rgb(59 130 246 / 0.35);
-    color: #ffffff;
+    background: var(--color-selection-bg);
+    color: var(--color-selection-fg);
+  }
+}
+
+/*
+ * ============================================================
+ *  TEMA — DARK (default) & LIGHT
+ *  Dark memakai nilai @theme di atas (tidak berubah sama sekali).
+ *  Light hanya menimpa token yang perlu berubah. Atribut dipasang
+ *  di <html> oleh ThemeContext.
+ * ============================================================
+ */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  /* Background diturunkan ke abu-biru yang lebih jelas (#eef1f7) supaya
+     kotak section & card putih (#ffffff) benar-benar terpisah dari
+     halaman — sebelumnya #f7f9fc vs #ffffff bedanya terlalu tipis. */
+  --color-background: #eef1f7;
+  --color-surface: #ffffff;
+  --color-surface-2: #e6ecf7;
+  --color-surface-3: #dbe4f2;
+  --color-track: #e6ecf7;
+  --color-foreground: #10131a;
+  /* Ditegaskan dari #5b6b85 supaya teks kecil/secondary (label mono,
+     tombol "Acak") lolos AA dengan nyaman di atas background baru. */
+  --color-muted: #4b5a75;
+
+  /* Aksen di mode cerah sedikit lebih gelap dari mode gelap (#3b82f6)
+     supaya teks putih di atas tombol/pill aksen lolos AA:
+     putih di #2563eb ≈ 5.17 (di #3b82f6 hanya 3.68).
+     Versi TEKS lebih gelap lagi karena harus lolos AA di atas panel
+     section: #2459e0 ≈ 4.98 (#2563eb hanya ≈ 4.39). */
+  --color-accent: #2563eb;
+  --color-accent-text: #2459e0;
+  --color-accent-soft: rgb(59 130 246 / 0.15);
+  /* Hover = lebih gelap (tombol aksen solid di latar terang). */
+  --color-accent-hover: #1d4ed8;
+  --color-accent-subtle: rgb(59 130 246 / 0.08);
+  --color-accent-faint: rgb(59 130 246 / 0.04);
+
+  /* Border & isi panel dipertegas (dari 0.12/0.20/0.04) supaya card dan
+     batas section tidak terlihat "flat" di atas background terang —
+     putih/abu di latar putih butuh garis yang jauh lebih jelas.
+     hairline-strong dinaikkan ke 32% khusus tepi kotak section. */
+  --color-hairline: rgb(15 23 42 / 0.2);
+  --color-hairline-strong: rgb(15 23 42 / 0.32);
+  --color-hairline-fill: rgb(15 23 42 / 0.06);
+
+  --color-faint: #0f172a;
+
+  --color-selection-bg: rgb(37 99 235 / 0.22);
+  --color-selection-fg: #10131a;
+}
+
+/*
+ * ============================================================
+ *  TEKS REDUP `text-faint/<opacity>` DI MODE CERAH
+ *  Token --color-faint bernilai PUTIH di mode gelap dan BIRU-HITAM di
+ *  mode cerah. Untuk teks, opacity rendah cocok di latar gelap (putih
+ *  redup) tetapi di latar terang hasilnya nyaris putih — teks jadi
+ *  "menyatu" dengan background. Jadi KHUSUS mode cerah, alpha dinaikkan
+ *  supaya label kecil, placeholder, dan empty-state tetap terbaca.
+ *  Border/isi (`border-faint/…`, `bg-faint/…`) tidak diubah karena
+ *  memang sengaja sangat tipis.
+ * ============================================================
+ */
+:root[data-theme="light"] .text-faint\/15 { color: rgb(15 23 42 / 0.52); }
+:root[data-theme="light"] .text-faint\/20 { color: rgb(15 23 42 / 0.6); }
+:root[data-theme="light"] .text-faint\/25 { color: rgb(15 23 42 / 0.63); }
+:root[data-theme="light"] .text-faint\/30 { color: rgb(15 23 42 / 0.67); }
+:root[data-theme="light"] .text-faint\/35 { color: rgb(15 23 42 / 0.71); }
+:root[data-theme="light"] .text-faint\/40 { color: rgb(15 23 42 / 0.76); }
+:root[data-theme="light"] .text-faint\/45 { color: rgb(15 23 42 / 0.82); }
+:root[data-theme="light"] .placeholder\:text-faint\/35::placeholder {
+  color: rgb(15 23 42 / 0.62);
+}
+:root[data-theme="light"] .placeholder\:text-faint\/45::placeholder {
+  color: rgb(15 23 42 / 0.7);
+}
+
+/*
+ * ============================================================
+ *  PANEL SECTION DI MODE CERAH
+ *  Kotak section (.section-box) diberi bayangan lembut supaya terangkat
+ *  dari background halaman yang terang. Mode gelap TIDAK berubah (di sana
+ *  panel sudah terbaca dari isian translucent + border).
+ * ============================================================
+ */
+:root[data-theme="light"] .section-box {
+  box-shadow:
+    0 1px 2px rgb(15 23 42 / 0.06),
+    0 16px 38px -20px rgb(15 23 42 / 0.28);
+}
+
+/*
+ * Mode cerah: card (elemen ber-class `bg-surface`) diberi bayangan lembut
+ * supaya terangkat dari panel/background. Ditaruh di layer `components`
+ * (di bawah `utilities`) supaya utilitas bayangan Tailwind tetap menang —
+ * mis. `hover:shadow-*` di ProjectCard tetap bekerja saat hover.
+ * Hanya class persis `bg-surface` (bukan `bg-surface-2`, `bg-surface/95`).
+ */
+@layer components {
+  :root[data-theme="light"] :where(.bg-surface) {
+    box-shadow:
+      0 1px 2px rgb(15 23 42 / 0.05),
+      0 10px 24px -18px rgb(15 23 42 / 0.22);
+  }
+}
+
+/*
+ * ============================================================
+ *  TRANSISI GANTI TEMA
+ *  Class `.theme-transition` dipasang SESAAT oleh ThemeContext saat tema
+ *  diganti, lalu dilepas setelah ~400ms. Jadi warna memudar halus, tapi
+ *  transisi/animsai lain yang sudah ada (hover, reveal, fade-up) tidak
+ *  ikut terpengaruh karena class-nya hanya aktif selama pergantian.
+ *  Hanya properti WARNA yang ditransisikan — bukan transform/opacity.
+ * ============================================================
+ */
+.theme-transition,
+.theme-transition *,
+.theme-transition *::before,
+.theme-transition *::after {
+  transition:
+    background-color 0.35s ease,
+    border-color 0.35s ease,
+    color 0.35s ease,
+    fill 0.35s ease,
+    stroke 0.35s ease !important;
+  transition-delay: 0s !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-transition,
+  .theme-transition *,
+  .theme-transition *::before,
+  .theme-transition *::after {
+    transition: none !important;
   }
 }
 

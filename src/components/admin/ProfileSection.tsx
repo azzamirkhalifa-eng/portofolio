@@ -66,11 +66,11 @@ function ImagePicker({
           className="h-20 w-20 rounded-lg border border-hairline object-cover"
         />
       ) : (
-        <div className="flex h-20 w-20 items-center justify-center rounded-lg border border-hairline bg-surface-2 font-mono text-xs text-white/25">
+        <div className="flex h-20 w-20 items-center justify-center rounded-lg border border-hairline bg-surface-2 font-mono text-xs text-faint/25">
           No Foto
         </div>
       )}
-      <label className="inline-flex cursor-pointer items-center gap-2 rounded-md border border-hairline px-4 py-2 text-sm text-foreground transition-colors hover:border-white/25 hover:bg-surface-2">
+      <label className="inline-flex cursor-pointer items-center gap-2 rounded-md border border-hairline px-4 py-2 text-sm text-foreground transition-colors hover:border-faint/25 hover:bg-surface-2">
         {uploading ? 'Uploading…' : 'Upload Foto'}
         <input
           type="file"
@@ -169,12 +169,12 @@ export default function ProfileSection() {
     <form onSubmit={handleSave} className="space-y-6">
       <div>
         <h1 className="text-xl font-bold tracking-tight">
-          Profile & Hero<span className="text-accent">.</span>
+          Profile & Hero<span className="text-accent-text">.</span>
         </h1>
         <p className="mt-1 text-sm text-muted">
           Nama, tagline, CTA, about, foto, email & link sosmed — tersimpan ke
           tabel{' '}
-          <code className="font-mono text-accent">profile</code>. (Halaman
+          <code className="font-mono text-accent-text">profile</code>. (Halaman
           publik juga bisa diedit langsung lewat Mode Edit.)
         </p>
       </div>
@@ -306,7 +306,7 @@ export default function ProfileSection() {
             />
           </Field>
         </div>
-        <p className="text-xs text-white/25">
+        <p className="text-xs text-faint/25">
           Versi English yang kosong otomatis menampilkan versi Indonesia di
           halaman berbahasa English (fallback).
         </p>
@@ -384,7 +384,7 @@ export default function ProfileSection() {
             />
           </Field>
         </div>
-        <p className="text-xs text-white/25">
+        <p className="text-xs text-faint/25">
           Kosongkan link yang tidak dipakai — otomatis disembunyikan di halaman
           publik.
         </p>

@@ -8,7 +8,7 @@ type SectionLabelProps = {
 export default function SectionLabel({ index, children }: SectionLabelProps) {
   return (
     <p className="flex items-center gap-3 font-mono text-xs uppercase tracking-[0.2em] text-muted">
-      {index && <span className="text-accent">{index}</span>}
+      {index && <span className="text-accent-text">{index}</span>}
       <span>{children}</span>
       <span className="h-px flex-1 bg-hairline" />
     </p>

@@ -35,7 +35,7 @@ export default function Contact({ profile }: ContactProps) {
       <SectionLabel index="04">Contact</SectionLabel>
 
       <h2 className="section-title-text mt-14 font-extrabold leading-[1.05] tracking-tight">
-        {t(ui.mariTerhubung, lang)}<span className="text-accent">.</span>
+        {t(ui.mariTerhubung, lang)}<span className="text-accent-text">.</span>
       </h2>
 
       <p className="body-text mt-6 max-w-xl leading-relaxed text-muted">
@@ -48,7 +48,7 @@ export default function Contact({ profile }: ContactProps) {
           <div className="mt-10 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:gap-6">
             {profile?.email && (
               <Button href={`mailto:${profile.email}`} variant="ghost">
-                <span className="font-mono text-xs text-accent">✉</span>
+                <span className="font-mono text-xs text-accent-text">✉</span>
                 {profile.email}
               </Button>
             )}
@@ -62,7 +62,7 @@ export default function Contact({ profile }: ContactProps) {
                 className="cursor-target text-sm text-muted transition-colors:hover:text-foreground"
               >
                 {label}
-                <span className="ml-1 text-accent">↗</span>
+                <span className="ml-1 text-accent-text">↗</span>
               </a>
             ))}
           </div>
@@ -81,7 +81,7 @@ export default function Contact({ profile }: ContactProps) {
         /* ---------- Mode Edit: isi email & link langsung ---------- */
         <div className="mt-8 space-y-2">
           <div className="flex items-center gap-3 rounded-lg border border-hairline bg-surface px-3 py-2">
-            <span className="w-24 shrink-0 font-mono text-xs text-accent">
+            <span className="w-24 shrink-0 font-mono text-xs text-accent-text">
               Email
             </span>
             <InlineText
@@ -114,7 +114,7 @@ export default function Contact({ profile }: ContactProps) {
               />
             </div>
           ))}
-          <p className="pt-1 font-mono text-[10px] uppercase tracking-[0.15em] text-white/25">
+          <p className="pt-1 font-mono text-[10px] uppercase tracking-[0.15em] text-faint/25">
             Link yang dikosongkan otomatis tidak tampil untuk pengunjung
           </p>
         </div>

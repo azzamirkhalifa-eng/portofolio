@@ -189,7 +189,7 @@ function JourneyForm({
             required
           />
           {state.entry_date && (
-            <p className="mt-1.5 font-mono text-[11px] text-accent">
+            <p className="mt-1.5 font-mono text-[11px] text-accent-text">
               Preview: {formatEntryDate(state.entry_date, 'id')}
             </p>
           )}
@@ -320,12 +320,12 @@ function JourneyForm({
               className="h-20 w-36 rounded-md border border-hairline object-cover"
             />
           ) : (
-            <div className="flex h-20 w-36 items-center justify-center rounded-md border border-hairline bg-surface-2 font-mono text-[11px] text-white/25">
+            <div className="flex h-20 w-36 items-center justify-center rounded-md border border-hairline bg-surface-2 font-mono text-[11px] text-faint/25">
               No Foto
             </div>
           )}
           <div className="flex-1">
-            <label className="inline-flex cursor-pointer items-center gap-2 rounded-md border border-hairline px-4 py-2 text-sm text-foreground transition-colors hover:border-white/25 hover:bg-surface-2">
+            <label className="inline-flex cursor-pointer items-center gap-2 rounded-md border border-hairline px-4 py-2 text-sm text-foreground transition-colors hover:border-faint/25 hover:bg-surface-2">
               {heroUploading ? 'Uploading…' : 'Upload Foto Utama'}
               <input
                 type="file"
@@ -370,7 +370,7 @@ function JourneyForm({
           placeholder="kosongkan = otomatis dari judul"
         />
       </Field>
-      <p className="font-mono text-[11px] text-white/35">
+      <p className="font-mono text-[11px] text-faint/35">
         Halaman: /perjalanan/{slugPreview}
       </p>
 
@@ -382,7 +382,7 @@ function JourneyForm({
         >
           {busy ? 'Menyimpan…' : 'Simpan Cerita'}
         </button>
-        <span className="font-mono text-[11px] text-white/30">
+        <span className="font-mono text-[11px] text-faint/30">
           Urutan timeline otomatis mengikuti tanggal — tidak perlu diatur manual
         </span>
       </div>
@@ -489,12 +489,12 @@ export default function JourneySection() {
     return (
       <div className="space-y-4 rounded-lg border border-yellow-400/30 bg-yellow-400/5 p-6">
         <h1 className="text-xl font-bold tracking-tight">
-          Perjalanan<span className="text-accent">.</span>
+          Perjalanan<span className="text-accent-text">.</span>
         </h1>
         <p className="text-sm text-muted">
-          Tabel <code className="font-mono text-accent">journey_entries</code>{' '}
+          Tabel <code className="font-mono text-accent-text">journey_entries</code>{' '}
           belum ada di Supabase. Jalankan{' '}
-          <code className="font-mono text-accent">supabase/migration-v18.sql</code>{' '}
+          <code className="font-mono text-accent-text">supabase/migration-v18.sql</code>{' '}
           di Supabase SQL Editor terlebih dahulu, lalu muat ulang halaman ini.
         </p>
       </div>
@@ -508,7 +508,7 @@ export default function JourneySection() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-xl font-bold tracking-tight">
-            Perjalanan<span className="text-accent">.</span>
+            Perjalanan<span className="text-accent-text">.</span>
           </h1>
           <p className="mt-1 text-sm text-muted">
             Kelola cerita timeline /perjalanan. Urutan tampil otomatis dari
@@ -520,7 +520,7 @@ export default function JourneySection() {
           <button
             type="button"
             onClick={() => setManageCats((v) => !v)}
-            className="rounded-md border border-hairline px-3 py-2 text-sm text-foreground transition-colors hover:border-white/25 hover:bg-surface-2"
+            className="rounded-md border border-hairline px-3 py-2 text-sm text-foreground transition-colors hover:border-faint/25 hover:bg-surface-2"
           >
             {manageCats ? 'Tutup Kategori' : 'Kelola Kategori'}
           </button>
@@ -573,7 +573,7 @@ export default function JourneySection() {
             className="flex flex-wrap items-center gap-3 rounded-lg border border-hairline bg-surface p-3"
           >
             {/* Nomor urut kronologis (informatif — bukan kolom position) */}
-            <span className="w-8 shrink-0 text-center font-mono text-xs text-white/25">
+            <span className="w-8 shrink-0 text-center font-mono text-xs text-faint/25">
               {idx + 1}
             </span>
 
@@ -586,7 +586,7 @@ export default function JourneySection() {
                 className="h-14 w-24 rounded-md border border-hairline object-cover"
               />
             ) : (
-              <div className="flex h-14 w-24 items-center justify-center rounded-md border border-hairline bg-surface-2 font-mono text-[10px] text-white/25">
+              <div className="flex h-14 w-24 items-center justify-center rounded-md border border-hairline bg-surface-2 font-mono text-[10px] text-faint/25">
                 No Img
               </div>
             )}
@@ -595,7 +595,7 @@ export default function JourneySection() {
               <p className="truncate text-sm font-medium text-foreground">
                 {item.title || '(tanpa judul)'}
                 {idx === entries.length - 1 && (
-                  <span className="ml-2 rounded-sm border border-accent/40 bg-accent/10 px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-wider text-accent">
+                  <span className="ml-2 rounded-sm border border-accent/40 bg-accent/10 px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-wider text-accent-text">
                     terbaru
                   </span>
                 )}
@@ -615,7 +615,7 @@ export default function JourneySection() {
                   setGalleryId(null)
                   setEditingId(item.id)
                 }}
-                className="rounded-md border border-hairline px-3 py-2 text-sm text-foreground transition-colors hover:border-white/25 hover:bg-surface-2 disabled:opacity-50"
+                className="rounded-md border border-hairline px-3 py-2 text-sm text-foreground transition-colors hover:border-faint/25 hover:bg-surface-2 disabled:opacity-50"
               >
                 Edit
               </button>
@@ -629,8 +629,8 @@ export default function JourneySection() {
                 aria-expanded={galleryId === item.id}
                 className={`rounded-md border px-3 py-2 text-sm transition-colors disabled:opacity-50 ${
                   galleryId === item.id
-                    ? 'border-accent/50 bg-accent/10 text-accent'
-                    : 'border-hairline text-foreground hover:border-white/25 hover:bg-surface-2'
+                    ? 'border-accent/50 bg-accent/10 text-accent-text'
+                    : 'border-hairline text-foreground hover:border-faint/25 hover:bg-surface-2'
                 }`}
               >
                 Galeri ({(item.gallery_images ?? []).length})

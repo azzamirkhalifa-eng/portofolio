@@ -76,18 +76,18 @@ function BlockBody({
             href={section.link_url}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-1 text-sm font-medium text-accent transition-colors hover:text-accent-hover"
+            className="inline-flex items-center gap-1 text-sm font-medium text-accent-text transition-colors hover:text-accent-hover"
           >
             {pick(section.link_label, section.link_label_en, lang) || 'Buka link'}
             <span aria-hidden>↗</span>
           </a>
         ) : (
           <>
-            <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/25">
+            <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-faint/25">
               Link opsional
             </span>
             <InlineTextBilingual
-              className="font-mono text-xs text-accent"
+              className="font-mono text-xs text-accent-text"
               valueId={section.link_label}
               valueEn={section.link_label_en ?? ''}
               enabled={editing}
@@ -155,7 +155,7 @@ function BlockBody({
               className="block h-auto max-h-[28rem] w-full rounded-lg border border-hairline object-contain"
             />
           ) : (
-            <div className="flex aspect-[16/10] w-full items-center justify-center rounded-lg border border-hairline bg-surface font-mono text-xs uppercase tracking-[0.3em] text-white/15">
+            <div className="flex aspect-[16/10] w-full items-center justify-center rounded-lg border border-hairline bg-surface font-mono text-xs uppercase tracking-[0.3em] text-faint/15">
               {editing ? 'Klik untuk upload' : 'Belum ada gambar'}
             </div>
           )}
@@ -195,7 +195,7 @@ export default function CustomZone({ zone, sections }: CustomZoneProps) {
           <div
             className={`mb-4 flex flex-wrap items-center gap-1.5 rounded-md border px-2 py-1.5 ${
               isHidden
-                ? 'border-dashed border-white/15 opacity-70'
+                ? 'border-dashed border-faint/15 opacity-70'
                 : 'border-hairline bg-background/40'
             }`}
           >
@@ -224,7 +224,7 @@ export default function CustomZone({ zone, sections }: CustomZoneProps) {
               ↓
             </MiniBtn>
 
-            <span className="ml-1 font-mono text-[10px] uppercase tracking-[0.15em] text-white/25">
+            <span className="ml-1 font-mono text-[10px] uppercase tracking-[0.15em] text-faint/25">
               Blok
             </span>
             <select
@@ -288,7 +288,7 @@ export default function CustomZone({ zone, sections }: CustomZoneProps) {
           </div>
         )}
         {isHidden && (
-          <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.2em] text-white/25">
+          <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.2em] text-faint/25">
             • blok disembunyikan untuk pengunjung
           </p>
         )}
@@ -319,7 +319,7 @@ export default function CustomZone({ zone, sections }: CustomZoneProps) {
               'Gagal menambah blok',
             )
           }
-          className="flex w-full items-center justify-center gap-2 rounded-lg border border-dashed border-white/15 px-5 py-4 font-mono text-xs uppercase tracking-[0.2em] text-muted transition-colors hover:border-accent/50 hover:text-accent disabled:opacity-50"
+          className="flex w-full items-center justify-center gap-2 rounded-lg border border-dashed border-faint/15 px-5 py-4 font-mono text-xs uppercase tracking-[0.2em] text-muted transition-colors hover:border-accent/50 hover:text-accent-text disabled:opacity-50"
         >
           + Tambah Section di sini
         </button>

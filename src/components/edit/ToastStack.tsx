@@ -14,7 +14,7 @@ type ToastStackProps = {
 const styles: Record<ToastStatus, string> = {
   success: 'border-emerald-400/30 text-emerald-400',
   error: 'border-red-400/30 text-red-400',
-  info: 'border-white/20 text-foreground',
+  info: 'border-faint/20 text-foreground',
 }
 
 /** Tumpukan notifikasi kecil di tengah bawah layar. */

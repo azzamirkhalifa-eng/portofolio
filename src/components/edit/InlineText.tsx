@@ -235,13 +235,13 @@ export default function InlineText({
         {value ? (
           value
         ) : (
-          <span className="italic text-white/30">
+          <span className="italic text-faint/30">
             {placeholder ?? 'Klik untuk menulis…'}
           </span>
         )}
         <span
           aria-hidden
-          className="ml-1.5 inline-block text-accent opacity-0 transition-opacity group-hover/edit:opacity-100"
+          className="ml-1.5 inline-block text-accent-text opacity-0 transition-opacity group-hover/edit:opacity-100"
         >
           ✎
         </span>
@@ -260,7 +260,7 @@ export default function InlineText({
         {value ? (
           value
         ) : (
-          <span className="italic text-white/30">
+          <span className="italic text-faint/30">
             {placeholder ?? 'Klik untuk menulis…'}
           </span>
         )}
@@ -313,7 +313,7 @@ export default function InlineText({
               >
                 Batal
               </button>
-              <span className="font-mono text-[10px] uppercase tracking-wider text-white/25">
+              <span className="font-mono text-[10px] uppercase tracking-wider text-faint/25">
                 {multiline ? 'Ctrl/⌘+Enter' : 'Enter'} simpan · auto-simpan
               </span>
 

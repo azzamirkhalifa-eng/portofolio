@@ -101,14 +101,14 @@ export default function ProjectCard({
               className="h-full w-full object-cover transition-transform duration-500 ease-out hover:scale-[1.05]"
             />
           ) : (
-            <div className="flex h-full w-full items-center justify-center font-mono text-sm uppercase tracking-[0.3em] text-white/15">
+            <div className="flex h-full w-full items-center justify-center font-mono text-sm uppercase tracking-[0.3em] text-faint/15">
               No Preview
             </div>
           )}
         </div>
 
         <div className="flex flex-1 flex-col p-5">
-          <h3 className="project-card-title font-semibold tracking-tight text-foreground transition-colors group-hover:text-accent">
+          <h3 className="project-card-title font-semibold tracking-tight text-foreground transition-colors group-hover:text-accent-text">
             {pick(project.title, project.title_en, lang)}
           </h3>
           <p className="project-card-text mt-2 line-clamp-3 leading-relaxed text-muted">
@@ -130,16 +130,16 @@ export default function ProjectCard({
                 >
                   {pick(btn.label, btn.label_en, lang) || 'Link'}
                   {btn.url ? (
-                    <span className="text-accent">↗</span>
+                    <span className="text-accent-text">↗</span>
                   ) : (
-                    <span className="text-white/30">{t(ui.tanpaLink, lang)}</span>
+                    <span className="text-faint/30">{t(ui.tanpaLink, lang)}</span>
                   )}
                 </span>
               ))}
             </div>
           )}
           {detailTo && (
-            <span className="mt-auto inline-flex items-center gap-1.5 pt-5 text-sm font-medium text-accent transition-colors group-hover:text-accent-hover">
+            <span className="mt-auto inline-flex items-center gap-1.5 pt-5 text-sm font-medium text-accent-text transition-colors group-hover:text-accent-hover">
               {t(ui.lihatDetail, lang)}
               <span aria-hidden>→</span>
             </span>
@@ -158,7 +158,7 @@ export default function ProjectCard({
         playOnce
         className="gh-card"
       >
-        <article className="cursor-target group flex flex-col overflow-hidden rounded-lg border border-hairline bg-surface transition-all duration-300 ease-out hover:-translate-y-1 hover:scale-[1.01] hover:border-white/20 hover:shadow-[0_18px_44px_-16px_rgba(0,0,0,0.7)]">
+        <article className="cursor-target group flex flex-col overflow-hidden rounded-lg border border-hairline bg-surface transition-all duration-300 ease-out hover:-translate-y-1 hover:scale-[1.01] hover:border-faint/20 hover:shadow-[0_18px_44px_-16px_rgba(0,0,0,0.7)]">
           {detailTo ? (
             <Link
               to={detailTo}
@@ -206,9 +206,9 @@ export default function ProjectCard({
               }}
             />
           ) : (
-            <div className="flex h-full w-full flex-col items-center justify-center gap-2 font-mono text-xs uppercase tracking-[0.3em] text-white/20">
+            <div className="flex h-full w-full flex-col items-center justify-center gap-2 font-mono text-xs uppercase tracking-[0.3em] text-faint/20">
               No Gambar
-              <span className="text-[10px] normal-case tracking-normal text-accent">
+              <span className="text-[10px] normal-case tracking-normal text-accent-text">
                 klik untuk upload
               </span>
             </div>
@@ -270,8 +270,8 @@ export default function ProjectCard({
             onClick={() => setDetailOpen((v) => !v)}
             className={`ml-1 rounded border px-2.5 py-1 text-xs font-medium transition-colors ${
               detailOpen
-                ? 'border-accent/40 bg-accent/10 text-accent'
-                : 'border-hairline text-muted hover:border-white/25 hover:text-foreground'
+                ? 'border-accent/40 bg-accent/10 text-accent-text'
+                : 'border-hairline text-muted hover:border-faint/25 hover:text-foreground'
             }`}
           >
             {detailOpen ? 'Tutup Detail' : 'Detail & Konten'}
@@ -288,7 +288,7 @@ export default function ProjectCard({
             <div className="flex items-center justify-between gap-3">
               <div>
                 <RowLabel>Tampil di beranda</RowLabel>
-                <p className="mt-0.5 text-[11px] text-white/30">
+                <p className="mt-0.5 text-[11px] text-faint/30">
                   Dicentang = muncul di cuplikan halaman utama.
                 </p>
               </div>
@@ -307,7 +307,7 @@ export default function ProjectCard({
               >
                 <span
                   aria-hidden
-                  className={`absolute top-0.5 h-5 w-5 rounded-full bg-white transition-all ${
+                  className={`absolute top-0.5 h-5 w-5 rounded-full bg-faint transition-all ${
                     project.featured ? 'left-[22px]' : 'left-0.5'
                   }`}
                 />
@@ -317,7 +317,7 @@ export default function ProjectCard({
             {/* Thumbnail beranda (opsional) */}
             <div>
               <RowLabel>Thumbnail beranda (opsional)</RowLabel>
-              <p className="mt-0.5 text-[11px] text-white/30">
+              <p className="mt-0.5 text-[11px] text-faint/30">
                 Kalau kosong, beranda otomatis memakai gambar utama project.
               </p>
               <div className="mt-2 flex flex-wrap items-center gap-3">
@@ -344,7 +344,7 @@ export default function ProjectCard({
                       className="h-14 w-24 rounded-md border border-hairline object-cover"
                     />
                   ) : (
-                    <div className="flex h-14 w-24 items-center justify-center rounded-md border border-hairline bg-surface-2 font-mono text-[10px] text-white/25">
+                    <div className="flex h-14 w-24 items-center justify-center rounded-md border border-hairline bg-surface-2 font-mono text-[10px] text-faint/25">
                       Auto
                     </div>
                   )}
@@ -371,7 +371,7 @@ export default function ProjectCard({
               <p className="mt-1 truncate font-mono text-xs text-muted">
                 /projects/{project.slug || '…'}
               </p>
-              <p className="mt-0.5 text-[11px] text-white/30">
+              <p className="mt-0.5 text-[11px] text-faint/30">
                 Dibuat otomatis dari judul. Ganti judul saat slug masih otomatis
                 untuk memperbaruinya.
               </p>
@@ -477,7 +477,7 @@ export default function ProjectCard({
                 }}
               />
               <input
-                className="mt-1.5 block w-full rounded-md border border-hairline bg-surface-3 px-2 py-1.5 font-mono text-xs text-muted outline-none transition-colors placeholder:text-white/45 focus:border-accent/60"
+                className="mt-1.5 block w-full rounded-md border border-hairline bg-surface-3 px-2 py-1.5 font-mono text-xs text-muted outline-none transition-colors placeholder:text-faint/45 focus:border-accent/60"
                 value={(project.tags_en ?? []).join(', ')}
                 placeholder="Tags (English) — kosong = pakai versi Indonesia"
                 aria-label="Edit tags project (English)"
@@ -522,7 +522,7 @@ export default function ProjectCard({
                   }}
                 />
               </div>
-              <p className="mt-1 text-[11px] text-white/30">
+              <p className="mt-1 text-[11px] text-faint/30">
                 Tombol utama di atas judul project. Kosongkan URL untuk
                 menyembunyikannya — pengunjung dibuka ke tab baru kalau link
                 eksternal.
@@ -545,13 +545,13 @@ export default function ProjectCard({
                   }}
                 />
               </div>
-              <p className="mt-1 text-[11px] text-white/30">
+              <p className="mt-1 text-[11px] text-faint/30">
                 Tiap tombol = label + URL tujuan (mis. "Live Demo"). Tombol
                 pertama tampil solid, sisanya garis tepi. Kosongkan kolom
                 yang tidak dipakai — otomatis disembunyikan untuk pengunjung.
               </p>
             </div>
-            <p className="text-[11px] text-white/25">
+            <p className="text-[11px] text-faint/25">
               Deskripsi, galeri, tombol & spesifikasi yang kosong otomatis
               tidak tampil di halaman detail.
             </p>

@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import type { MouseEvent as ReactMouseEvent } from 'react'
 import { useActiveSection } from '../hooks/useActiveSection'
 import { useLanguage } from '../context/LanguageContext'
+import { useTheme } from '../context/ThemeContext'
 import { ui } from '../lib/i18n'
 
 /**
@@ -30,6 +31,43 @@ type NavbarProps = {
   name?: string
 }
 
+/** Ikon matahari — ditampilkan saat klik akan mengaktifkan mode cerah. */
+function SunIcon() {
+  return (
+    <svg
+      aria-hidden
+      className="h-3.5 w-3.5"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <circle cx="12" cy="12" r="4" />
+      <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+    </svg>
+  )
+}
+
+/** Ikon bulan — ditampilkan saat klik akan mengaktifkan mode gelap. */
+function MoonIcon() {
+  return (
+    <svg
+      aria-hidden
+      className="h-3.5 w-3.5"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+    </svg>
+  )
+}
+
 /**
  * Navbar sticky di semua halaman publik.
  * - Desktop (≥sm): menu horizontal seperti sebelumnya.
@@ -42,6 +80,7 @@ type NavbarProps = {
 export default function Navbar({ name }: NavbarProps) {
   const { pathname, hash } = useLocation()
   const { lang, setLang } = useLanguage()
+  const { theme, toggleTheme } = useTheme()
   const activeSection = useActiveSection([
     'top',
     'about',
@@ -103,6 +142,9 @@ export default function Navbar({ name }: NavbarProps) {
     }
   }
 
+  // Target tema (yang akan aktif setelah tombol diklik) untuk label/ikon.
+  const themeTarget = theme === 'dark' ? ui.modeCerah[lang] : ui.modeGelap[lang]
+
   const linkCls = (isActive: boolean) =>
     `relative text-sm transition-colors ${
       isActive ? 'text-foreground' : 'text-muted hover:text-foreground'
@@ -124,7 +166,7 @@ export default function Navbar({ name }: NavbarProps) {
           className="cursor-target font-mono text-sm font-medium tracking-tight text-foreground transition-opacity hover:opacity-80"
         >
           {name || 'Portfolio'}
-          <span className="text-accent">.</span>
+          <span className="text-accent-text">.</span>
         </Link>
 
         {/* Grup kanan (desktop): menu + toggle bahasa */}
@@ -172,11 +214,23 @@ export default function Navbar({ name }: NavbarProps) {
           data-edit-nav
           onClick={() => setLang(lang === 'id' ? 'en' : 'id')}
           title="Ganti bahasa / Switch language"
-          className="cursor-target rounded-md border border-hairline px-2.5 py-1 font-mono text-xs transition-colors hover:border-white/30"
+          className="cursor-target rounded-md border border-hairline px-2.5 py-1 font-mono text-xs transition-colors hover:border-faint/30"
         >
-          <span className={lang === 'id' ? 'font-bold text-accent' : 'text-white/30'}>ID</span>
-          <span className="mx-1 text-white/20">/</span>
-          <span className={lang === 'en' ? 'font-bold text-accent' : 'text-white/30'}>EN</span>
+          <span className={lang === 'id' ? 'font-bold text-accent-text' : 'text-faint/30'}>ID</span>
+          <span className="mx-1 text-faint/20">/</span>
+          <span className={lang === 'en' ? 'font-bold text-accent-text' : 'text-faint/30'}>EN</span>
+        </button>
+
+        {/* Toggle tema gelap/cerah */}
+        <button
+          type="button"
+          data-edit-nav
+          onClick={toggleTheme}
+          title={themeTarget}
+          aria-label={themeTarget}
+          className="cursor-target inline-flex items-center justify-center rounded-md border border-hairline px-2.5 py-1 text-foreground transition-colors hover:border-faint/30"
+        >
+          {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
         </button>
         </div>
 
@@ -186,7 +240,7 @@ export default function Navbar({ name }: NavbarProps) {
           aria-label={mobileOpen ? 'Tutup menu' : 'Buka menu'}
           aria-expanded={mobileOpen}
           onClick={() => setMobileOpen((v) => !v)}
-          className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-hairline text-foreground transition-colors hover:border-white/25 sm:hidden"
+          className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-hairline text-foreground transition-colors hover:border-faint/25 sm:hidden"
         >
           <svg
             aria-hidden
@@ -241,9 +295,23 @@ export default function Navbar({ name }: NavbarProps) {
               onClick={() => setLang(lang === 'id' ? 'en' : 'id')}
               className="flex w-full items-center justify-center gap-1 rounded-md border border-hairline px-2 py-2.5 font-mono text-sm"
             >
-              <span className={lang === 'id' ? 'font-bold text-accent' : 'text-white/30'}>ID</span>
-              <span className="text-white/20">/</span>
-              <span className={lang === 'en' ? 'font-bold text-accent' : 'text-white/30'}>EN</span>
+              <span className={lang === 'id' ? 'font-bold text-accent-text' : 'text-faint/30'}>ID</span>
+              <span className="text-faint/20">/</span>
+              <span className={lang === 'en' ? 'font-bold text-accent-text' : 'text-faint/30'}>EN</span>
+            </button>
+          </li>
+
+          {/* Toggle tema — versi mobile */}
+          <li className="pt-2">
+            <button
+              type="button"
+              data-edit-nav
+              onClick={toggleTheme}
+              aria-label={themeTarget}
+              className="flex w-full items-center justify-center gap-2 rounded-md border border-hairline px-2 py-2.5 font-mono text-sm text-foreground transition-colors hover:border-faint/30"
+            >
+              {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
+              <span>{themeTarget}</span>
             </button>
           </li>
         </ul>

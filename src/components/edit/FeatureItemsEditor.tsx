@@ -9,7 +9,7 @@ import InlineText from './InlineText'
 
 /** Sama gayanya dengan input editor lain (DetailEditors/InlineText). */
 const editorInputCls =
-  'w-full rounded-md border border-hairline bg-surface-3 px-2 py-1.5 font-mono text-xs text-foreground outline-none transition-colors placeholder:text-white/45 focus:border-accent/60 focus:ring-1 focus:ring-accent/30'
+  'w-full rounded-md border border-hairline bg-surface-3 px-2 py-1.5 font-mono text-xs text-foreground outline-none transition-colors placeholder:text-faint/45 focus:border-accent/60 focus:ring-1 focus:ring-accent/30'
 
 /** Id unik untuk poin baru (tanpa dependensi). */
 function newId(): string {
@@ -204,7 +204,7 @@ export default function FeatureItemsEditor({ project }: { project: Project }) {
   return (
     <div className="mt-4 rounded-lg border border-accent/40 bg-accent-subtle p-3 sm:p-4">
       <div className="flex items-center gap-2">
-        <p className="font-mono text-[11px] uppercase tracking-[0.15em] text-accent">
+        <p className="font-mono text-[11px] uppercase tracking-[0.15em] text-accent-text">
           Poin Fitur ({items.length})
         </p>
         {saving && (
@@ -242,7 +242,7 @@ export default function FeatureItemsEditor({ project }: { project: Project }) {
               >
                 ↓
               </MiniBtn>
-              <span className="ml-1 font-mono text-[10px] uppercase tracking-[0.15em] text-white/25">
+              <span className="ml-1 font-mono text-[10px] uppercase tracking-[0.15em] text-faint/25">
                 Poin {i + 1}
               </span>
               <MiniBtn
@@ -303,7 +303,7 @@ export default function FeatureItemsEditor({ project }: { project: Project }) {
                   >
                     ␥
                   </MiniBtn>
-                  <span className="font-mono text-[10px] text-white/30">
+                  <span className="font-mono text-[10px] text-faint/30">
                     gambar terpasang
                   </span>
                 </>
@@ -316,7 +316,7 @@ export default function FeatureItemsEditor({ project }: { project: Project }) {
                   >
                     ⬆
                   </MiniBtn>
-                  <span className="font-mono text-[10px] text-white/30">
+                  <span className="font-mono text-[10px] text-faint/30">
                     tanpa gambar (teks-saja)
                   </span>
                 </>
@@ -340,7 +340,7 @@ export default function FeatureItemsEditor({ project }: { project: Project }) {
           </div>
         ))}
         {items.length === 0 && (
-          <p className="font-mono text-[11px] text-white/30">
+          <p className="font-mono text-[11px] text-faint/30">
             Belum ada poin fitur. Klik + untuk menambah.
           </p>
         )}

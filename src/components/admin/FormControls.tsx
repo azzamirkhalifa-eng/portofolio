@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 
 /** Class input standar untuk semua form admin (dark, hairline, focus accent). */
 export const inputCls =
-  'w-full rounded-md border border-hairline bg-surface-3 px-3 py-2 text-sm text-foreground placeholder:text-white/45 focus:border-accent/60 focus:outline-none focus:ring-1 focus:ring-accent/40'
+  'w-full rounded-md border border-hairline bg-surface-3 px-3 py-2 text-sm text-foreground placeholder:text-faint/45 focus:border-accent/60 focus:outline-none focus:ring-1 focus:ring-accent/40'
 
 /** Class label monospace kecil di atas tiap field. */
 export const labelCls =

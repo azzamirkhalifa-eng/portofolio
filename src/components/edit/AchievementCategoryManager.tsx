@@ -70,7 +70,7 @@ export default function AchievementCategoryManager({
         Kelola Kategori Pencapaian
       </p>
       {categories.length === 0 && (
-        <p className="text-sm text-white/25">Belum ada kategori.</p>
+        <p className="text-sm text-faint/25">Belum ada kategori.</p>
       )}
       {categories.map((cat, idx) => (
         <div
@@ -149,13 +149,13 @@ export default function AchievementCategoryManager({
         className="flex flex-col gap-2 pt-1 sm:flex-row sm:items-center"
       >
         <input
-          className="w-full flex-1 rounded-md border border-hairline bg-surface-3 px-2.5 py-1.5 text-sm text-foreground outline-none placeholder:text-white/45 focus:border-accent/60 focus:ring-1 focus:ring-accent/30"
+          className="w-full flex-1 rounded-md border border-hairline bg-surface-3 px-2.5 py-1.5 text-sm text-foreground outline-none placeholder:text-faint/45 focus:border-accent/60 focus:ring-1 focus:ring-accent/30"
           value={newName}
           onChange={(e) => setNewName(e.target.value)}
           placeholder="Kategori baru (ID) — misal: Sertifikasi"
         />
         <input
-          className="w-full flex-1 rounded-md border border-hairline bg-surface-3 px-2.5 py-1.5 text-sm text-foreground outline-none placeholder:text-white/45 focus:border-accent/60 focus:ring-1 focus:ring-accent/30"
+          className="w-full flex-1 rounded-md border border-hairline bg-surface-3 px-2.5 py-1.5 text-sm text-foreground outline-none placeholder:text-faint/45 focus:border-accent/60 focus:ring-1 focus:ring-accent/30"
           value={newNameEn}
           onChange={(e) => setNewNameEn(e.target.value)}
           placeholder="Category name (EN) — optional, misal: Certification"

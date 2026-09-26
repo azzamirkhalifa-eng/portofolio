@@ -14,7 +14,7 @@ function newButtonId(): string {
 }
 
 const editorInputCls =
-  'w-full rounded-md border border-hairline bg-surface-3 px-2 py-1.5 font-mono text-xs text-foreground outline-none transition-colors placeholder:text-white/45 focus:border-accent/60 focus:ring-1 focus:ring-accent/30'
+  'w-full rounded-md border border-hairline bg-surface-3 px-2 py-1.5 font-mono text-xs text-foreground outline-none transition-colors placeholder:text-faint/45 focus:border-accent/60 focus:ring-1 focus:ring-accent/30'
 
 /* ============================================================
  * Editor galeri project (multi-gambar).
@@ -103,7 +103,7 @@ export function GalleryEditor({
   return (
     <div className="space-y-2">
       {images.length === 0 && (
-        <p className="text-xs text-white/30">Belum ada gambar galeri.</p>
+        <p className="text-xs text-faint/30">Belum ada gambar galeri.</p>
       )}
 
       {images.length > 0 && (
@@ -134,7 +134,7 @@ export function GalleryEditor({
           type="button"
           disabled={uploading}
           onClick={() => fileRef.current?.click()}
-          className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-hairline px-2.5 py-1.5 text-xs font-medium text-foreground transition-colors hover:border-white/25 hover:bg-surface-2 disabled:opacity-50"
+          className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-hairline px-2.5 py-1.5 text-xs font-medium text-foreground transition-colors hover:border-faint/25 hover:bg-surface-2 disabled:opacity-50"
         >
           {uploading ? 'Mengunggah…' : '+ Upload Gambar'}
         </button>
@@ -253,7 +253,7 @@ export function SpecsEditor({ specs, onChange }: SpecsEditorProps) {
   return (
     <div className="space-y-2">
       {rows.length === 0 && (
-        <p className="text-xs text-white/30">Belum ada spesifikasi.</p>
+        <p className="text-xs text-faint/30">Belum ada spesifikasi.</p>
       )}
 
       {rows.map((row, i) => (
@@ -285,7 +285,7 @@ export function SpecsEditor({ specs, onChange }: SpecsEditorProps) {
       <button
         type="button"
         onClick={addRow}
-        className="w-full rounded-md border border-dashed border-white/15 px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.15em] text-muted transition-colors hover:border-accent/50 hover:text-accent"
+        className="w-full rounded-md border border-dashed border-faint/15 px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.15em] text-muted transition-colors hover:border-accent/50 hover:text-accent-text"
       >
         + Tambah Spesifikasi
       </button>
@@ -363,7 +363,7 @@ export function SpecsEditorBilingual({
   return (
     <div className="space-y-2">
       {rows.length === 0 && (
-        <p className="text-xs text-white/30">Belum ada spesifikasi.</p>
+        <p className="text-xs text-faint/30">Belum ada spesifikasi.</p>
       )}
 
       {rows.map((row, i) => (
@@ -404,7 +404,7 @@ export function SpecsEditorBilingual({
       <button
         type="button"
         onClick={() => push([...rows, { k: '', v: '', vEn: '' }])}
-        className="w-full rounded-md border border-dashed border-white/15 px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.15em] text-muted transition-colors hover:border-accent/50 hover:text-accent"
+        className="w-full rounded-md border border-dashed border-faint/15 px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.15em] text-muted transition-colors hover:border-accent/50 hover:text-accent-text"
       >
         + Tambah Spesifikasi
       </button>
@@ -510,7 +510,7 @@ export function ButtonsEditorBilingual({
   return (
     <div className="space-y-2">
       {rows.length === 0 && (
-        <p className="text-xs text-white/30">Belum ada tombol.</p>
+        <p className="text-xs text-faint/30">Belum ada tombol.</p>
       )}
 
       {rows.map((row, i) => (
@@ -530,7 +530,7 @@ export function ButtonsEditorBilingual({
             >
               ↓
             </MiniBtn>
-            <span className="ml-1 font-mono text-[10px] uppercase tracking-[0.15em] text-white/25">
+            <span className="ml-1 font-mono text-[10px] uppercase tracking-[0.15em] text-faint/25">
               Tombol {i + 1}
             </span>
             <MiniBtn
@@ -566,7 +566,7 @@ export function ButtonsEditorBilingual({
             className={`${editorInputCls} w-full`}
           />
           {i === 0 && (
-            <p className="ml-12 mt-1 font-mono text-[10px] uppercase tracking-[0.15em] text-white/25">
+            <p className="ml-12 mt-1 font-mono text-[10px] uppercase tracking-[0.15em] text-faint/25">
               Opsional — kosongkan URL kalau tidak ingin berupa link.
             </p>
           )}
@@ -576,12 +576,12 @@ export function ButtonsEditorBilingual({
       <button
         type="button"
         onClick={addRow}
-        className="w-full rounded-md border border-dashed border-white/15 px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.15em] text-muted transition-colors hover:border-accent/50 hover:text-accent"
+        className="w-full rounded-md border border-dashed border-faint/15 px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.15em] text-muted transition-colors hover:border-accent/50 hover:text-accent-text"
       >
         + Tambah Tombol
       </button>
 
-      <p className="mt-1 font-mono text-[11px] text-white/35">
+      <p className="mt-1 font-mono text-[11px] text-faint/35">
         Tombol pertama tampil solid, sisanya garis tepi. Kosongkan kolom
         URL kalau tombol tidak ingin mengarah ke link.
       </p>
@@ -670,7 +670,7 @@ export function ButtonsEditor({
   return (
     <div className="space-y-2">
       {rows.length === 0 && (
-        <p className="text-xs text-white/30">Belum ada tombol.</p>
+        <p className="text-xs text-faint/30">Belum ada tombol.</p>
       )}
 
       {rows.map((row, i) => (
@@ -690,7 +690,7 @@ export function ButtonsEditor({
             >
               ↓
             </MiniBtn>
-            <span className="ml-1 font-mono text-[10px] uppercase tracking-[0.15em] text-white/25">
+            <span className="ml-1 font-mono text-[10px] uppercase tracking-[0.15em] text-faint/25">
               Tombol {i + 1}
             </span>
             <MiniBtn
@@ -719,7 +719,7 @@ export function ButtonsEditor({
             />
           </div>
           {i === 0 && (
-            <p className="ml-12 mt-1 font-mono text-[10px] uppercase tracking-[0.15em] text-white/25">
+            <p className="ml-12 mt-1 font-mono text-[10px] uppercase tracking-[0.15em] text-faint/25">
               Opsional — kosongkan URL kalau tidak ingin berupa link.
             </p>
           )}
@@ -729,12 +729,12 @@ export function ButtonsEditor({
       <button
         type="button"
         onClick={addRow}
-        className="w-full rounded-md border border-dashed border-white/15 px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.15em] text-muted transition-colors hover:border-accent/50 hover:text-accent"
+        className="w-full rounded-md border border-dashed border-faint/15 px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.15em] text-muted transition-colors hover:border-accent/50 hover:text-accent-text"
       >
         + Tambah Tombol
       </button>
 
-      <p className="mt-1 font-mono text-[11px] text-white/35">
+      <p className="mt-1 font-mono text-[11px] text-faint/35">
         Tombol pertama tampil solid, sisanya garis tepi. Kosongkan kolom
         URL kalau tombol tidak ingin mengarah ke link.
       </p>

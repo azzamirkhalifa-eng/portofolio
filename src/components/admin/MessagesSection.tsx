@@ -37,7 +37,7 @@ function MessageRow({
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
         {/* Badge "belum dibaca": dot accent + label */}
         {!msg.is_read && (
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-accent/15 px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.12em] text-accent">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-accent/15 px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.12em] text-accent-text">
             <span className="h-1.5 w-1.5 rounded-full bg-accent" />
             Baru
           </span>
@@ -47,11 +47,11 @@ function MessageRow({
         </span>
         <a
           href={`mailto:${msg.email}`}
-          className="font-mono text-xs text-accent hover:underline"
+          className="font-mono text-xs text-accent-text hover:underline"
         >
           {msg.email}
         </a>
-        <span className="ml-auto font-mono text-[10px] text-white/30">
+        <span className="ml-auto font-mono text-[10px] text-faint/30">
           {formatTime(msg.created_at)}
         </span>
       </div>
@@ -66,7 +66,7 @@ function MessageRow({
             type="button"
             disabled={busy}
             onClick={() => void onMarkRead(msg)}
-            className="rounded-md border border-hairline px-3 py-1.5 text-xs text-foreground transition-colors hover:border-white/25 hover:bg-surface-2 disabled:opacity-50"
+            className="rounded-md border border-hairline px-3 py-1.5 text-xs text-foreground transition-colors hover:border-faint/25 hover:bg-surface-2 disabled:opacity-50"
           >
             Tandai sudah dibaca
           </button>
@@ -128,7 +128,7 @@ export default function MessagesSection() {
     <div className="space-y-6">
       <div>
         <h1 className="text-xl font-bold tracking-tight">
-          Pesan Masuk<span className="text-accent">.</span>
+          Pesan Masuk<span className="text-accent-text">.</span>
         </h1>
         <p className="mt-1 text-sm text-muted">
           Pesan dari form kontak. {unreadCount > 0

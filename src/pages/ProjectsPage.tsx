@@ -7,6 +7,8 @@ import { useCategories } from '../hooks/useCategories'
 import { useCustomSections } from '../hooks/useCustomSections'
 import Projects from '../components/Projects'
 import CustomZone from '../components/CustomSections'
+import Seo from '../components/Seo'
+import { DEFAULT_DESCRIPTION } from '../lib/seo'
 
 /**
  * Halaman /projects — "Lihat Semua Project":
@@ -22,6 +24,12 @@ export default function ProjectsPage() {
 
   return (
     <>
+      <Seo
+        title={`${t(ui.projects, lang)} — ZAMIR`}
+        description={DEFAULT_DESCRIPTION}
+        image={profile?.avatar_url || null}
+        path="/projects"
+      />
       <Link
         to="/"
         data-edit-nav

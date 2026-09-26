@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import SmoothImage from './ui/SmoothImage'
+import RandomButton from './ui/RandomButton'
 import { useEditMode } from '../context/EditModeContext'
 import { useLanguage } from '../context/LanguageContext'
 import { formatEntryDate, pick, t, ui } from '../lib/i18n'
@@ -56,12 +57,12 @@ function TimelineItem({
   const card = (
     <>
       {isLatest && (
-        <span className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-accent/40 bg-accent-subtle px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.15em] text-accent">
+        <span className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-accent/40 bg-accent-subtle px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.15em] text-accent-text">
           <span aria-hidden className="text-[8px]">●</span>
           {t(ui.kamuDiSini, lang)}
         </span>
       )}
-      <p className="font-mono text-xs uppercase tracking-[0.2em] text-accent">
+      <p className="font-mono text-xs uppercase tracking-[0.2em] text-accent-text">
         {formatEntryDate(entry.entry_date, lang)}
         {categoryName && (
           <span className="ml-2 rounded-full border border-hairline px-2 py-0.5 text-[10px] text-muted">
@@ -69,7 +70,7 @@ function TimelineItem({
           </span>
         )}
       </p>
-      <h3 className="mt-1.5 text-lg font-semibold tracking-tight text-foreground transition-colors group-hover:text-accent">
+      <h3 className="mt-1.5 text-lg font-semibold tracking-tight text-foreground transition-colors group-hover:text-accent-text">
         {pick(entry.title, entry.title_en, lang) || 'Tanpa judul'}
       </h3>
       {pick(entry.excerpt, entry.excerpt_en, lang) && (
@@ -91,7 +92,7 @@ function TimelineItem({
   )
 
   const cardCls =
-    'reveal group block w-full rounded-xl border border-hairline bg-surface p-5 text-left transition-colors hover:border-white/25'
+    'reveal group block w-full rounded-xl border border-hairline bg-surface p-5 text-left transition-colors hover:border-faint/25'
 
   return (
     <li className="relative lg:grid lg:grid-cols-2">
@@ -156,6 +157,11 @@ export default function JourneyTimeline({
     [entries, filter],
   )
 
+  // Tujuan tombol "Acak": SEMUA cerita yang punya slug (halaman detail).
+  const randomTargets = entries
+    .filter((e) => e.slug)
+    .map((e) => ({ id: e.id, to: `/perjalanan/${e.slug}` }))
+
   if (loading) {
     return (
       <div className="mt-10 space-y-10">
@@ -175,37 +181,44 @@ export default function JourneyTimeline({
 
   return (
     <div className="mt-10">
-      {/* Tab filter kategori — pola sama dengan Projects/Achievements */}
-      {tabs.length > 0 && (
-        <div className="flex gap-2 overflow-x-auto pb-1">
-          <button
-            type="button"
-            onClick={() => setFilter('all')}
-            className={`shrink-0 rounded-full border px-4 py-1.5 font-mono text-xs transition-colors ${
-              filter === 'all'
-                ? 'border-accent bg-accent text-white'
-                : 'border-hairline text-muted hover:border-white/25 hover:text-foreground'
-            }`}
-          >
-            {t(ui.semua, lang)}
-          </button>
-          {tabs.map((cat) => {
-            const active = filter === cat.id
-            return (
+      {/* Tab filter kategori + tombol "Acak" — pola sama dengan Projects/Achievements */}
+      {(tabs.length > 0 || randomTargets.length > 0) && (
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          {tabs.length > 0 ? (
+            <div className="flex gap-2 overflow-x-auto pb-1">
               <button
-                key={cat.id}
                 type="button"
-                onClick={() => setFilter(active ? 'all' : cat.id)}
+                onClick={() => setFilter('all')}
                 className={`shrink-0 rounded-full border px-4 py-1.5 font-mono text-xs transition-colors ${
-                  active
+                  filter === 'all'
                     ? 'border-accent bg-accent text-white'
-                    : 'border-hairline text-muted hover:border-white/25 hover:text-foreground'
+                    : 'border-hairline text-muted hover:border-faint/25 hover:text-foreground'
                 }`}
               >
-                {pick(cat.name, cat.name_en, lang)}
+                {t(ui.semua, lang)}
               </button>
-            )
-          })}
+              {tabs.map((cat) => {
+                const active = filter === cat.id
+                return (
+                  <button
+                    key={cat.id}
+                    type="button"
+                    onClick={() => setFilter(active ? 'all' : cat.id)}
+                    className={`shrink-0 rounded-full border px-4 py-1.5 font-mono text-xs transition-colors ${
+                      active
+                        ? 'border-accent bg-accent text-white'
+                        : 'border-hairline text-muted hover:border-faint/25 hover:text-foreground'
+                    }`}
+                  >
+                    {pick(cat.name, cat.name_en, lang)}
+                  </button>
+                )
+              })}
+            </div>
+          ) : (
+            <span />
+          )}
+          <RandomButton items={randomTargets} label={ui.acakPerjalanan} />
         </div>
       )}
 

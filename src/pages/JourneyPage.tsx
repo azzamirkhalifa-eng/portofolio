@@ -5,6 +5,7 @@ import SectionLabel from '../components/ui/SectionLabel'
 import SectionBox from '../components/ui/SectionBox'
 import JourneyTimeline from '../components/JourneyTimeline'
 import { useJourneyEntries, useJourneyCategories } from '../hooks/useJourneyEntries'
+import Seo from '../components/Seo'
 
 /**
  * Halaman /perjalanan — timeline vertikal zigzag perjalanan:
@@ -18,6 +19,11 @@ export default function JourneyPage() {
 
   return (
     <>
+      <Seo
+        title={`${t(ui.perjalananJudul, lang)} — ZAMIR`}
+        description={t(ui.perjalananDesc, lang)}
+        path="/perjalanan"
+      />
       <Link
         to="/"
         data-edit-nav
